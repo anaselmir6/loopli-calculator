@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Loopli">
+<meta name="theme-color" content="#1e6b45">
+<title>Loopli</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+:root{
+  --g:#1e6b45;--gm:#2d8a5a;--gl:#e4f4ec;--gxl:#f0faf5;
+  --ink:#0f1a14;--ink2:#3a4f42;--ink3:#7a9085;
+  --bg:#f7faf8;--card:#ffffff;--border:#dce8e1;--border2:#b8d4c4;
+  --red:#c0392b;--redl:#fdecea;
+  --r:12px;--rl:16px;
+  --mono:ui-monospace,'SF Mono','Courier New',monospace;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+  --nav-h:60px;
+}
+html{height:100%;background:var(--bg)}
+body{
+  font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;
+  background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5;
+  height:100%;overflow:hidden;
+}
+
+/* ── SHELL ── */
+.shell{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+
+/* ── TOP BAR ── */
+.topbar{
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  padding:calc(var(--safe-t) + 10px) 16px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+  position:relative;z-index:10;
+}
+.topbar-brand{font-size:20px;font-weight:700;color:var(--g);letter-spacing:-.4px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.saved-badge{font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:4px}
+.saved-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0}
+
+/* ── SCROLL AREA ── */
+.scroll-area{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding:16px 16px calc(var(--nav-h) + var(--safe-b) + 16px);
+}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--card);
+  border-top:1px solid var(--border);
+  padding:8px 0 calc(var(--safe-b) + 4px);
+  display:flex;justify-content:space-around;align-items:flex-start;
+  z-index:20;
+  -webkit-backdrop-filter:blur(20px);
+  backdrop-filter:blur(20px);
+}
+.bnav{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  color:var(--ink3);font-size:10px;font-weight:500;
+  cursor:pointer;padding:2px 8px;min-width:56px;
+  transition:color .15s;
+  -webkit-user-select:none;user-select:none;
+}
+.bnav svg{width:24px;height:24px;stroke-width:1.8;stroke:currentColor;fill:none;margin-bottom:1px}
+.bnav.active{color:var(--g)}
+.bnav.active svg{stroke-width:2.2}
+
+/* ── PAGE TITLE ── */
+.ptitle{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-.5px;margin-bottom:4px}
+.psub{font-size:13px;color:var(--ink3);margin-bottom:16px}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:12px}
+.card-label{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
+
+/* ── PROFIT HERO (top of calc) ── */
+.profit-hero{
+  border-radius:var(--rl);padding:18px 16px;margin-bottom:12px;text-align:center;
+  background:var(--gl);
+}
+.profit-hero.neg{background:var(--redl)}
+.ph-product{font-size:13px;font-weight:500;color:var(--ink3);margin-bottom:6px;min-height:20px}
+.ph-amount{font-size:38px;font-weight:700;font-family:var(--mono);color:var(--g);letter-spacing:-1px;line-height:1}
+.ph-amount.neg{color:var(--red)}
+.ph-row{display:flex;justify-content:center;gap:20px;margin-top:10px}
+.ph-stat{text-align:center}
+.ph-stat-val{font-size:15px;font-weight:600;font-family:var(--mono);color:var(--ink)}
+.ph-stat-lbl{font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+
+/* ── CONFIRM BTN ── */
+.btn-confirm{
+  width:100%;padding:15px;background:var(--g);color:#fff;
+  border:none;border-radius:var(--r);
+  font-family:inherit;font-size:16px;font-weight:600;
+  cursor:pointer;letter-spacing:.1px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-bottom:12px;
+  -webkit-appearance:none;
+}
+.btn-confirm:active{opacity:.85}
+.btn-confirm svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5}
+
+/* ── FORM FIELDS ── */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.field-full{margin-bottom:12px}
+.field-label{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;display:block}
+.field-input{
+  width:100%;padding:12px 13px;
+  border:1.5px solid var(--border);border-radius:var(--r);
+  font-family:inherit;font-size:16px;color:var(--ink);
+  background:var(--card);outline:none;
+  -webkit-appearance:none;appearance:none;
+}
+.field-input:focus{border-color:var(--gm);box-shadow:0 0 0 3px rgba(30,107,69,.1)}
+.field-input.hl{background:#fffef5;border-color:#fcd34d}
+.field-input.hl:focus{border-color:var(--gm)}
+
+/* ── MATERIAL ROWS ── */
+.sec-label{
+  font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  padding:6px 10px;border-radius:8px;margin:10px 0 6px;display:block;
+}
+.mat-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
+.mat-row:last-child{border-bottom:none}
+.mat-name{flex:1;font-size:14px;color:var(--ink2)}
+.mat-qty-wrap{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.mat-qty{
+  width:72px;padding:8px 8px;text-align:right;
+  border:1.5px solid #fcd34d;border-radius:8px;
+  font-family:var(--mono);font-size:14px;color:var(--ink);
+  background:#fffef5;outline:none;-webkit-appearance:none;
+}
+.mat-qty:focus{border-color:var(--gm);background:var(--gxl)}
+.mat-unit{font-size:11px;color:var(--ink3);font-family:var(--mono);width:32px}
+.mat-lc{font-size:12px;font-family:var(--mono);color:var(--g);font-weight:500;width:54px;text-align:right}
+
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.kpi-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ink3);margin-bottom:4px}
+.kpi-val{font-size:20px;font-weight:700;font-family:var(--mono);color:var(--ink);letter-spacing:-.5px}
+.kpi-val.g{color:var(--g)}
+
+/* ── LOG TABLE (mobile cards) ── */
+.log-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;margin-bottom:8px}
+.log-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.log-card-name{font-size:15px;font-weight:600;color:var(--ink)}
+.log-card-profit{font-size:18px;font-weight:700;font-family:var(--mono);color:var(--g)}
+.log-card-profit.neg{color:var(--red)}
+.log-card-meta{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.log-card-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.log-stat{display:flex;justify-content:space-between;font-size:12px;padding:3px 0}
+.log-stat span:first-child{color:var(--ink3)}
+.log-stat span:last-child{font-family:var(--mono);font-weight:500}
+.log-card-del{background:none;border:none;color:var(--border2);font-size:18px;cursor:pointer;padding:2px 4px;line-height:1;flex-shrink:0}
+.log-card-del:active{color:var(--red)}
+
+.chip{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-doll{background:#e0f2fe;color:#0369a1}
+.chip-pacifier{background:#fce7f3;color:#be185d}
+.chip-rattle{background:#fef3c7;color:#b45309}
+
+/* ── TYPE CARDS ── */
+.type-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.type-card-title{font-size:14px;font-weight:600;margin-bottom:10px}
+.tstat{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)}
+.tstat:last-child{border-bottom:none}
+.tstat span:last-child{font-family:var(--mono);font-weight:500}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.btn-sec{
+  padding:10px 16px;background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r);font-family:inherit;font-size:14px;font-weight:500;
+  color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+  -webkit-appearance:none;
+}
+.btn-sec:active{background:var(--gl)}
+.btn-sec.danger{color:var(--red);border-color:#fca5a5}
+.btn-pri{
+  flex:1;padding:13px;background:var(--g);color:#fff;
+  border:none;border-radius:var(--r);font-family:inherit;font-size:15px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;
+  -webkit-appearance:none;
+}
+.btn-pri:active{opacity:.85}
+.btn-pri svg,.btn-sec svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:48px 16px;color:var(--ink3)}
+.empty-icon{font-size:40px;display:block;margin-bottom:10px;opacity:.4}
+.empty p{font-size:14px}
+
+/* ── IMPORT DROP ── */
+.drop-zone{
+  border:2px dashed var(--border2);border-radius:var(--r);
+  padding:28px 16px;text-align:center;cursor:pointer;
+  background:var(--gxl);margin-bottom:12px;
+}
+.drop-zone p{font-size:14px;color:var(--ink3)}
+.drop-zone strong{color:var(--g)}
+
+/* ── STEP LIST ── */
+.step-list{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step-num{background:var(--g);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.step-text{font-size:14px;color:var(--ink2);padding-top:2px}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:var(--border);margin:14px 0}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;top:calc(var(--safe-t) + 60px);left:16px;right:16px;z-index:100;pointer-events:none}
+.toast{
+  background:var(--ink);color:#fff;padding:12px 16px;border-radius:var(--r);
+  font-size:14px;font-weight:500;opacity:0;transform:translateY(-8px);
+  transition:all .2s;text-align:center;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.ok{background:var(--g)}
+.toast.err{background:var(--red)}
+
+#file-inp{display:none}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="topbar">
+    <div class="topbar-brand">Loopli</div>
+    <div class="topbar-right">
+      <div class="saved-badge"><span class="saved-dot" id="sdot"></span><span id="slbl">Saved</span></div>
+    </div>
+  </div>
+
+  <div class="scroll-area" id="main"></div>
+
+  <div class="bottom-nav">
+    <div class="bnav active" onclick="go('doll')" id="bn-doll">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>Doll
+    </div>
+    <div class="bnav" onclick="go('pacifier')" id="bn-pacifier">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>Pacifier
+    </div>
+    <div class="bnav" onclick="go('rattle')" id="bn-rattle">
+      <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Rattle
+    </div>
+    <div class="bnav" onclick="go('log')" id="bn-log">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 12h6M9 16h4"/></svg>Log
+    </div>
+    <div class="bnav" onclick="go('more')" id="bn-more">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>More
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap"><div class="toast" id="toast"></div></div>
+<input type="file" id="file-inp" accept=".json">
+
+<script>
+// ── MATERIALS ─────────────────────────────────────────────────────────────────
+const MAT={
+  pkg:[
+    {id:1,n:"Packaging bags",u:"pcs",c:3.5/12},
+    {id:2,n:"Packaging box",u:"pcs",c:5.0/24},
+    {id:3,n:"Laser print (box)",u:"pcs",c:2.0/1},
+    {id:4,n:"Paper packaging",u:"pcs",c:4.0/30},
+    {id:5,n:"Stickers",u:"pcs",c:3.0/24},
+    {id:6,n:"Ribbon",u:"meter",c:2.0/21},
+    {id:7,n:"Tag card",u:"pcs",c:2.0/16},
+  ],
+  doll:[
+    {id:8,n:"Safety eye",u:"pcs",c:3.0/100},
+    {id:9,n:"Yarn",u:"gram",c:4.0/100},
+    {id:10,n:"Stuffing",u:"gram",c:25.0/2000},
+    {id:11,n:"Silicone",u:"pcs",c:2.0/12},
+  ],
+  pac:[
+    {id:12,n:"Clip for pacifier",u:"pcs",c:4.0/5},
+    {id:13,n:"Beads",u:"pcs",c:3.0/30},
+    {id:14,n:"Wood letter",u:"pcs",c:5.0/26},
+    {id:15,n:"Silicone beads",u:"pcs",c:5.0/10},
+    {id:16,n:"Pacifier string",u:"meter",c:3.0/100},
+    {id:17,n:"Laser print (clip)",u:"pcs",c:1.0/1},
+  ],
+  rat:[
+    {id:18,n:"Wood ring",u:"pcs",c:3.0/30},
+    {id:19,n:"Bell",u:"pcs",c:3.0/10},
+  ],
+  wire:[{id:20,n:"Wire",u:"gram",c:5.0/130}]
+};
+const SECS={
+  doll:[
+    {lbl:"Packaging",bg:"#e0f2fe",fg:"#0369a1",mats:MAT.pkg},
+    {lbl:"Doll materials",bg:"#dbeafe",fg:"#1d4ed8",mats:MAT.doll},
+  ],
+  pacifier:[
+    {lbl:"Packaging",bg:"#e0f2fe",fg:"#0369a1",mats:MAT.pkg},
+    {lbl:"Pacifier materials",bg:"#fce7f3",fg:"#be185d",mats:MAT.pac},
+  ],
+  rattle:[
+    {lbl:"Packaging",bg:"#e0f2fe",fg:"#0369a1",mats:MAT.pkg},
+    {lbl:"Rattle materials",bg:"#fef3c7",fg:"#b45309",mats:MAT.rat},
+    {lbl:"Wire",bg:"#f3e8ff",fg:"#7c3aed",mats:MAT.wire},
+  ]
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const KEY='loopli_v5';
+function load(){
+  try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}
+  return{
+    log:[],
+    c:{
+      doll:{name:'',sell:'',qty_made:1,qty:{}},
+      pacifier:{name:'',sell:'',qty_made:1,qty:{}},
+      rattle:{name:'',sell:'',qty_made:1,qty:{}}
+    }
+  };
+}
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(S));
+    const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const d=document.getElementById('sdot');
+    const l=document.getElementById('slbl');
+    if(d)d.style.background='#22c55e';
+    if(l)l.textContent='Saved '+t;
+  }catch(e){}
+}
+
+let S=load();
+let tab='doll';
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+const usd=n=>(isNaN(n)||!isFinite(n))?'$—':'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct=n=>(isNaN(n)||!isFinite(n))?'—':(n*100).toFixed(1)+'%';
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function gq(type,id){return parseFloat(S.c[type]?.qty?.[id])||0}
+function cost(type){
+  let t=0;SECS[type].forEach(s=>s.mats.forEach(m=>{t+=gq(type,m.id)*m.c}));return t;
+}
+function toast(msg,kind){
+  const t=$('toast');t.textContent=msg;
+  t.className='toast '+(kind==='err'?'err':'ok')+' show';
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function go(t){
+  tab=t;
+  ['doll','pacifier','rattle','log','more'].forEach(k=>{
+    const b=$('bn-'+k);if(b)b.classList.toggle('active',k===t);
+  });
+  render();
+  const m=$('main');if(m)m.scrollTop=0;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(){
+  const m=$('main');if(!m)return;
+  if(tab==='log')m.innerHTML=rLog();
+  else if(tab==='more')m.innerHTML=rMore();
+  else m.innerHTML=rCalc(tab);
+}
+
+// ── CALCULATOR ────────────────────────────────────────────────────────────────
+function rCalc(type){
+  const s=S.c[type];
+  const unitCost=cost(type);
+  const sell=parseFloat(s.sell)||0;
+  const qty=parseInt(s.qty_made)||1;
+  const profit=sell-unitCost;
+  const margin=sell>0?profit/sell:NaN;
+  const isNeg=profit<0&&sell>0;
+
+  let shtml='';
+  SECS[type].forEach(sec=>{
+    shtml+=`<span class="sec-label" style="background:${sec.bg};color:${sec.fg}">${sec.lbl}</span>`;
+    sec.mats.forEach(m=>{
+      const q=gq(type,m.id);
+      const lc=q>0?usd(q*m.c):'';
+      shtml+=`<div class="mat-row">
+        <span class="mat-name">${m.n}</span>
+        <div class="mat-qty-wrap">
+          <input class="mat-qty" type="number" min="0" step="0.1" inputmode="decimal"
+            value="${q||''}" placeholder="0"
+            oninput="sqty('${type}',${m.id},this.value)">
+          <span class="mat-unit">${m.u}</span>
+          <span class="mat-lc">${lc}</span>
+        </div>
+      </div>`;
+    });
+  });
+
+  return`
+    <div class="profit-hero${isNeg?' neg':''}">
+      <div class="ph-product">${s.name||'New '+cap(type)}</div>
+      <div class="ph-amount${isNeg?' neg':''}">${usd(profit)}</div>
+      <div class="ph-row">
+        <div class="ph-stat"><div class="ph-stat-val">${pct(margin)}</div><div class="ph-stat-lbl">margin</div></div>
+        <div class="ph-stat"><div class="ph-stat-val">${usd(unitCost)}</div><div class="ph-stat-lbl">unit cost</div></div>
+        <div class="ph-stat"><div class="ph-stat-val">${usd(unitCost*qty)}</div><div class="ph-stat-lbl">total cost ×${qty}</div></div>
+      </div>
+    </div>
+
+    <button class="btn-confirm" onclick="confirm_add('${type}')">
+      <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+      Confirm &amp; save to log
+    </button>
+
+    <div class="card">
+      <div class="card-label">Product details</div>
+      <div class="field-full">
+        <label class="field-label">Product name</label>
+        <input class="field-input hl" type="text" placeholder="e.g. Rosie the Bear"
+          value="${s.name||''}" oninput="sname('${type}',this.value)">
+      </div>
+      <div class="field-row">
+        <div>
+          <label class="field-label">Qty to make</label>
+          <input class="field-input" type="number" min="1" step="1" inputmode="numeric"
+            value="${qty}" oninput="sqm('${type}',this.value)">
+        </div>
+        <div>
+          <label class="field-label">Sell price ($)</label>
+          <input class="field-input hl" type="number" min="0" step="0.5" inputmode="decimal"
+            placeholder="0.00" value="${s.sell||''}" oninput="ssell('${type}',this.value)">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Materials used</div>
+      ${shtml}
+    </div>`;
+}
+
+// ── LOG ───────────────────────────────────────────────────────────────────────
+function rLog(){
+  const log=S.log;
+  const tRev=log.reduce((a,r)=>a+r.sell*r.qty,0);
+  const tCost=log.reduce((a,r)=>a+r.cost*r.qty,0);
+  const tP=tRev-tCost;
+
+  let cards='';
+  if(!log.length){
+    cards=`<div class="empty"><span class="empty-icon">📋</span><p>No products yet.<br>Confirm an entry from the calculator.</p></div>`;
+  } else {
+    [...log].reverse().forEach((r,ri)=>{
+      const i=log.length-1-ri;
+      const rev=r.sell*r.qty,cost=r.cost*r.qty,profit=rev-cost;
+      const neg=profit<0;
+      cards+=`<div class="log-card">
+        <div class="log-card-top">
+          <div>
+            <div class="log-card-name">${r.name}</div>
+            <div class="log-card-meta" style="margin-top:4px">
+              <span class="chip chip-${r.type}">${r.type}</span>
+              <span style="font-size:11px;color:var(--ink3)">${r.date}</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="log-card-profit${neg?' neg':''}">${usd(profit)}</div>
+            <button class="log-card-del" onclick="delLog(${i})">✕</button>
+          </div>
+        </div>
+        <div class="log-card-stats">
+          <div class="log-stat"><span>Qty</span><span>${r.qty}</span></div>
+          <div class="log-stat"><span>Unit cost</span><span>${usd(r.cost)}</span></div>
+          <div class="log-stat"><span>Sell price</span><span>${usd(r.sell)}</span></div>
+          <div class="log-stat"><span>Revenue</span><span>${usd(rev)}</span></div>
+        </div>
+      </div>`;
+    });
+  }
+
+  return`
+    <div class="ptitle">Product Log</div>
+    <div class="psub">${log.length} product${log.length!==1?'s':''}</div>
+
+    ${log.length?`<div class="kpi-grid">
+      <div class="kpi"><div class="kpi-lbl">Total revenue</div><div class="kpi-val">${usd(tRev)}</div></div>
+      <div class="kpi"><div class="kpi-lbl">Total cost</div><div class="kpi-val">${usd(tCost)}</div></div>
+      <div class="kpi" style="grid-column:1/-1"><div class="kpi-lbl">Total profit</div><div class="kpi-val g">${usd(tP)}</div></div>
+    </div>`:''}
+
+    ${cards}
+
+    ${log.length?`<div class="btn-row">
+      <button class="btn-sec" onclick="expCSV()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export CSV
+      </button>
+      <button class="btn-sec danger" onclick="clrLog()">Clear all</button>
+    </div>`:''}`;
+}
+
+// ── MORE (Dashboard + Backup) ─────────────────────────────────────────────────
+function rMore(){
+  const log=S.log;
+  const tRev=log.reduce((a,r)=>a+r.sell*r.qty,0);
+  const tCost=log.reduce((a,r)=>a+r.cost*r.qty,0);
+  const tP=tRev-tCost;
+  const avgM=tRev>0?tP/tRev:NaN;
+
+  function bt(t){
+    const rows=log.filter(r=>r.type===t);
+    const rev=rows.reduce((a,r)=>a+r.sell*r.qty,0);
+    const cost=rows.reduce((a,r)=>a+r.cost*r.qty,0);
+    return{n:rows.length,rev,cost,profit:rev-cost,m:rev>0?(rev-cost)/rev:NaN};
+  }
+
+  const types=[{k:'doll',l:'Doll',chip:'chip-doll'},{k:'pacifier',l:'Pacifier',chip:'chip-pacifier'},{k:'rattle',l:'Rattle',chip:'chip-rattle'}];
+
+  const tcards=types.map(t=>{
+    const d=bt(t.k);
+    return`<div class="type-card">
+      <div class="type-card-title"><span class="chip ${t.chip}">${t.l}</span></div>
+      <div class="tstat"><span>Products</span><span>${d.n}</span></div>
+      <div class="tstat"><span>Revenue</span><span>${usd(d.rev)}</span></div>
+      <div class="tstat"><span>Cost</span><span>${usd(d.cost)}</span></div>
+      <div class="tstat"><span>Profit</span><span style="color:var(--g);font-weight:600">${usd(d.profit)}</span></div>
+      <div class="tstat"><span>Margin</span><span>${pct(d.m)}</span></div>
+    </div>`;
+  }).join('');
+
+  const count=log.length;
+  const size=(JSON.stringify(S).length/1024).toFixed(1);
+
+  return`
+    <div class="ptitle">More</div>
+    <div class="psub">Dashboard &amp; backup</div>
+
+    <div class="card">
+      <div class="card-label">Overview</div>
+      <div class="kpi-grid" style="margin-bottom:0">
+        <div class="kpi"><div class="kpi-lbl">Products</div><div class="kpi-val">${log.length}</div></div>
+        <div class="kpi"><div class="kpi-lbl">Avg margin</div><div class="kpi-val">${pct(avgM)}</div></div>
+        <div class="kpi"><div class="kpi-lbl">Revenue</div><div class="kpi-val">${usd(tRev)}</div></div>
+        <div class="kpi"><div class="kpi-lbl">Profit</div><div class="kpi-val g">${usd(tP)}</div></div>
+      </div>
+    </div>
+
+    ${tcards}
+
+    <div class="card">
+      <div class="card-label">Backup &amp; Restore</div>
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:12px;line-height:1.6">${count} product${count!==1?'s':''} · ~${size} KB · To use on another phone, download the backup and import it on the other device.</p>
+      <div class="btn-row" style="margin-bottom:12px">
+        <button class="btn-pri" onclick="expJSON()" style="flex:1">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Download backup
+        </button>
+      </div>
+      <div class="drop-zone" onclick="$('file-inp').click()" ondragover="event.preventDefault()" ondrop="dropF(event)">
+        <p><strong>Tap to import backup</strong></p>
+        <p style="margin-top:4px;font-size:12px">Choose a .json backup file</p>
+      </div>
+      <div class="div"></div>
+      <div class="card-label">How to move data to another phone</div>
+      <div class="step-list">
+        ${['Tap "Download backup" above','Send the .json file to your other phone via WhatsApp, iMessage, or email','Open this HTML file on the other phone in Safari','Go to More → tap "Import backup" → choose the file','All your data appears instantly'].map((s,i)=>`
+        <div class="step"><span class="step-num">${i+1}</span><span class="step-text">${s}</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+function sname(t,v){S.c[t].name=v;upd(t);save()}
+function ssell(t,v){S.c[t].sell=v;upd(t);save()}
+function sqm(t,v){S.c[t].qty_made=parseInt(v)||1;upd(t);save()}
+function sqty(t,id,v){
+  if(!S.c[t].qty)S.c[t].qty={};
+  S.c[t].qty[id]=parseFloat(v)||0;
+  upd(t);save();
+}
+
+function upd(type){
+  const s=S.c[type];
+  const unitCost=cost(type);
+  const sell=parseFloat(s.sell)||0;
+  const qty=parseInt(s.qty_made)||1;
+  const profit=sell-unitCost;
+  const margin=sell>0?profit/sell:NaN;
+  const isNeg=profit<0&&sell>0;
+
+  const hero=document.querySelector('.profit-hero');
+  if(hero){
+    hero.className='profit-hero'+(isNeg?' neg':'');
+    const pn=hero.querySelector('.ph-product');
+    const pa=hero.querySelector('.ph-amount');
+    const stats=hero.querySelectorAll('.ph-stat-val');
+    if(pn)pn.textContent=s.name||'New '+cap(type);
+    if(pa){pa.textContent=usd(profit);pa.className='ph-amount'+(isNeg?' neg':'')}
+    if(stats[0])stats[0].textContent=pct(margin);
+    if(stats[1])stats[1].textContent=usd(unitCost);
+    if(stats[2])stats[2].textContent=usd(unitCost*qty);
+  }
+  // line costs
+  const allMats=[];
+  SECS[type].forEach(sec=>sec.mats.forEach(m=>allMats.push(m)));
+  document.querySelectorAll('.mat-lc').forEach((el,i)=>{
+    if(allMats[i]){const m=allMats[i];const q=gq(type,m.id);el.textContent=q>0?usd(q*m.c):''}
+  });
+}
+
+function confirm_add(type){
+  const s=S.c[type];
+  const name=(s.name||'').trim();
+  if(!name){toast('Enter a product name first','err');return}
+  const unitCost=cost(type);
+  const sell=parseFloat(s.sell)||0;
+  const qty=parseInt(s.qty_made)||1;
+  S.log.push({name,type,qty,cost:unitCost,sell,date:new Date().toLocaleDateString('en-GB')});
+  S.c[type]={name:'',sell:'',qty_made:1,qty:{}};
+  save();
+  toast('"'+name+'" saved ✓');
+  render();
+}
+
+function delLog(i){
+  const name=S.log[i].name;
+  S.log.splice(i,1);save();toast('"'+name+'" removed');render();
+}
+function clrLog(){
+  if(!S.log.length)return;
+  if(!confirm('Clear all '+S.log.length+' entries?'))return;
+  S.log=[];save();render();
+}
+
+// ── EXPORT / IMPORT ───────────────────────────────────────────────────────────
+function expJSON(){
+  const payload={version:1,exported:new Date().toISOString(),log:S.log};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));
+  a.download='loopli_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();toast('Backup downloaded');
+}
+function expCSV(){
+  if(!S.log.length){toast('Nothing to export','err');return}
+  const h='Name,Type,Qty,Unit Cost,Sell Price,Revenue,Cost,Profit,Date\n';
+  const rows=S.log.map(r=>{
+    const rev=r.sell*r.qty,cost=r.cost*r.qty;
+    return`"${r.name}","${r.type}",${r.qty},${r.cost.toFixed(4)},${r.sell.toFixed(2)},${rev.toFixed(2)},${cost.toFixed(2)},${(rev-cost).toFixed(2)},"${r.date}"`;
+  }).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([h+rows],{type:'text/csv'}));
+  a.download='loopli_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();toast('CSV exported');
+}
+function impJSON(text){
+  try{
+    const p=JSON.parse(text);
+    const logData=p.log||p.data?.log;
+    if(!Array.isArray(logData))throw 0;
+    if(!confirm('Import '+logData.length+' products? This replaces your current '+S.log.length+' entries.'))return;
+    S.log=logData;save();go('log');
+    toast('Imported '+logData.length+' products ✓');
+  }catch(e){toast('Invalid backup file','err')}
+}
+$('file-inp').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=ev=>impJSON(ev.target.result);r.readAsText(f);
+  e.target.value='';
+});
+function dropF(e){
+  e.preventDefault();
+  const f=e.dataTransfer?.files?.[0];if(!f)return;
+  const r=new FileReader();r.onload=ev=>impJSON(ev.target.result);r.readAsText(f);
+}
+
+render();
+</script>
+</body>
+</html>
