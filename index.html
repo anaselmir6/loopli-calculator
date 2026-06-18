@@ -653,17 +653,39 @@ function decodeState(str){
   return JSON.parse(decodeURIComponent(escape(atob(str))));
 }
 function copyLink(){
-  if(!S.log.length){toast('No log data to sync yet','err');return}
+  if(!S.log.length){toast('No log data to sync yet — confirm a product first','err');return}
   const encoded=encodeState(S);
   const url=location.href.split('#')[0]+'#sync='+encoded;
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(url).then(()=>toast('Sync link copied! Open on any device ✓'));
-  }else{
-    const ta=document.createElement('textarea');
-    ta.value=url;ta.style.position='fixed';ta.style.opacity='0';
-    document.body.appendChild(ta);ta.select();document.execCommand('copy');
-    document.body.removeChild(ta);toast('Sync link copied! Open on any device ✓');
+  function tryClipboard(){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url)
+        .then(()=>toast('Sync link copied! Open on any device ✓'))
+        .catch(()=>showDialog(url));
+    }else{
+      try{
+        const ta=document.createElement('textarea');
+        ta.value=url;ta.style.position='fixed';ta.style.opacity='0';
+        document.body.appendChild(ta);ta.select();document.execCommand('copy');
+        document.body.removeChild(ta);toast('Sync link copied! Open on any device ✓');
+      }catch(e){showDialog(url)}
+    }
   }
+  tryClipboard();
+}
+function showDialog(url){
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;padding:16px';
+  ov.innerHTML=`<div style="background:#fff;border-radius:16px;padding:20px;width:100%;max-width:480px;margin:auto">
+    <div style="font-weight:700;font-size:16px;margin-bottom:8px">Sync link</div>
+    <p style="font-size:13px;color:#7a9085;margin-bottom:12px">Copy this link and open it on your other device</p>
+    <textarea readonly style="width:100%;border:1.5px solid #dce8e1;border-radius:10px;padding:10px;font-size:12px;height:80px;resize:none;word-break:break-all;font-family:monospace">${url}</textarea>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="this.closest('div[style]').remove();navigator.clipboard&&navigator.clipboard.writeText('${url.replace(/'/g,"\\'")}').then(()=>toast('Copied ✓'))" style="flex:1;padding:13px;background:#1e6b45;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer">Copy</button>
+      <button onclick="this.closest('div[style]').remove()" style="padding:13px 18px;background:#f0faf5;border:1.5px solid #dce8e1;border-radius:10px;font-size:15px;cursor:pointer">Close</button>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('textarea').select();
 }
 function checkURLSync(){
   const hash=location.hash;
