@@ -569,6 +569,13 @@ function rMore(){
           Download backup
         </button>
       </div>
+      <div style="margin-bottom:12px">
+        <label class="field-label">Paste sync link</label>
+        <div style="display:flex;gap:8px">
+          <input class="field-input" type="url" id="paste-link-inp" placeholder="Paste your sync link here…" style="flex:1;font-size:14px">
+          <button class="btn-sec" onclick="loadPastedLink()" style="flex-shrink:0;padding:12px 16px;font-weight:600">Load</button>
+        </div>
+      </div>
       <div class="drop-zone" onclick="$('file-inp').click()" ondragover="event.preventDefault()" ondrop="dropF(event)">
         <p><strong>Tap to import backup</strong></p>
         <p style="margin-top:4px;font-size:12px">Choose a .json backup file</p>
@@ -686,6 +693,20 @@ function showDialog(url){
   </div>`;
   document.body.appendChild(ov);
   ov.querySelector('textarea').select();
+}
+function loadPastedLink(){
+  const inp=document.getElementById('paste-link-inp');
+  if(!inp)return;
+  const val=inp.value.trim();
+  if(!val){toast('Paste a sync link first','err');return}
+  const idx=val.indexOf('#sync=');
+  if(idx===-1){toast('Invalid sync link','err');return}
+  try{
+    const data=decodeState(val.slice(idx+6));
+    if(!Array.isArray(data.log))throw 0;
+    const msg='Load '+data.log.length+' item'+(data.log.length!==1?'s':'')+' from sync link? This replaces your current '+S.log.length+' entries.';
+    if(confirm(msg)){S=data;save();inp.value='';go('log');toast('Synced '+data.log.length+' items ✓')}
+  }catch(e){toast('Invalid sync link','err')}
 }
 function checkURLSync(){
   const hash=location.hash;
