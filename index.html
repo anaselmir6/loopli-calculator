@@ -28,6 +28,36 @@ body{
   height:100%;overflow:hidden;
 }
 
+/* ── AUTH OVERLAY ── */
+.auth-ov{
+  position:fixed;inset:0;background:var(--bg);z-index:1000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;
+  padding-top:calc(var(--safe-t) + 40px);
+  padding-bottom:calc(var(--safe-b) + 24px);
+  overflow-y:auto;
+}
+.auth-brand{font-size:38px;font-weight:800;color:var(--g);letter-spacing:-1.5px;margin-bottom:4px}
+.auth-tagline{font-size:14px;color:var(--ink3);margin-bottom:32px;text-align:center;line-height:1.5}
+.auth-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--rl);
+  padding:24px;width:100%;max-width:400px;
+}
+.auth-title{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:18px}
+.auth-err{
+  font-size:13px;color:var(--red);background:var(--redl);
+  border-radius:8px;padding:10px 12px;margin-bottom:12px;
+  display:none;line-height:1.5;
+}
+.auth-err.show{display:block}
+.auth-toggle{text-align:center;margin-top:16px;font-size:14px;color:var(--ink3)}
+.auth-toggle a{color:var(--g);font-weight:600;cursor:pointer;text-decoration:underline}
+.auth-secure{
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;margin-top:24px;font-size:12px;color:var(--ink3);
+}
+.auth-secure svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;opacity:.5}
+
 /* ── SHELL ── */
 .shell{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
 
@@ -57,20 +87,27 @@ body{
   position:fixed;bottom:0;left:0;right:0;
   background:var(--card);
   border-top:1px solid var(--border);
-  padding:8px 0 calc(var(--safe-b) + 4px);
-  display:flex;justify-content:space-around;align-items:flex-start;
   z-index:20;
   -webkit-backdrop-filter:blur(20px);
   backdrop-filter:blur(20px);
 }
+.bnav-scroll{
+  display:flex;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding:6px 0 calc(var(--safe-b) + 2px);
+}
+.bnav-scroll::-webkit-scrollbar{display:none}
 .bnav{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  color:var(--ink3);font-size:10px;font-weight:500;
-  cursor:pointer;padding:2px 8px;min-width:56px;
+  flex:1 0 58px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  color:var(--ink3);font-size:9px;font-weight:500;
+  cursor:pointer;padding:2px 0;
   transition:color .15s;
   -webkit-user-select:none;user-select:none;
 }
-.bnav svg{width:24px;height:24px;stroke-width:1.8;stroke:currentColor;fill:none;margin-bottom:1px}
+.bnav svg{width:22px;height:22px;stroke-width:1.8;stroke:currentColor;fill:none;margin-bottom:1px}
 .bnav.active{color:var(--g)}
 .bnav.active svg{stroke-width:2.2}
 
@@ -82,7 +119,7 @@ body{
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:12px}
 .card-label{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
 
-/* ── PROFIT HERO (top of calc) ── */
+/* ── PROFIT HERO ── */
 .profit-hero{
   border-radius:var(--rl);padding:18px 16px;margin-bottom:12px;text-align:center;
   background:var(--gl);
@@ -107,6 +144,7 @@ body{
   -webkit-appearance:none;
 }
 .btn-confirm:active{opacity:.85}
+.btn-confirm:disabled{opacity:.6;cursor:default}
 .btn-confirm svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5}
 
 /* ── FORM FIELDS ── */
@@ -150,7 +188,7 @@ body{
 .kpi-val{font-size:20px;font-weight:700;font-family:var(--mono);color:var(--ink);letter-spacing:-.5px}
 .kpi-val.g{color:var(--g)}
 
-/* ── LOG TABLE (mobile cards) ── */
+/* ── LOG CARDS ── */
 .log-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;margin-bottom:8px}
 .log-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
 .log-card-name{font-size:15px;font-weight:600;color:var(--ink)}
@@ -165,9 +203,14 @@ body{
 .log-card-del:active{color:var(--red)}
 
 .chip{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.tab-toggle{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid var(--border);background:var(--bg);color:var(--ink3);cursor:pointer;font-family:inherit}
+.tab-toggle.active{background:var(--g);color:#fff;border-color:var(--g)}
 .chip-doll{background:#e0f2fe;color:#0369a1}
 .chip-pacifier{background:#fce7f3;color:#be185d}
 .chip-rattle{background:#fef3c7;color:#b45309}
+.chip-icord{background:#ede9fe;color:#6d28d9}
+.chip-set{background:#ccfbf1;color:#0f766e}
+.chip-blanket{background:#fff1f2;color:#be123c}
 
 /* ── TYPE CARDS ── */
 .type-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
@@ -209,12 +252,6 @@ body{
 .drop-zone p{font-size:14px;color:var(--ink3)}
 .drop-zone strong{color:var(--g)}
 
-/* ── STEP LIST ── */
-.step-list{display:flex;flex-direction:column;gap:10px}
-.step{display:flex;gap:12px;align-items:flex-start}
-.step-num{background:var(--g);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
-.step-text{font-size:14px;color:var(--ink2);padding-top:2px}
-
 /* ── DIVIDER ── */
 .div{height:1px;background:var(--border);margin:14px 0}
 
@@ -233,8 +270,38 @@ body{
 </style>
 </head>
 <body>
-<div class="shell">
 
+<!-- ── AUTH OVERLAY ─────────────────────────────────────────────────────────── -->
+<div id="auth-ov" class="auth-ov">
+  <div class="auth-brand">Loopli</div>
+  <div class="auth-tagline">Your craft business,<br>synced on every device</div>
+  <div class="auth-card">
+    <div class="auth-title" id="auth-title">Welcome back</div>
+    <div class="auth-err" id="auth-err"></div>
+    <div class="field-full">
+      <label class="field-label">Email</label>
+      <input class="field-input" type="email" id="auth-email" placeholder="you@example.com"
+        autocomplete="email" inputmode="email">
+    </div>
+    <div class="field-full" style="margin-bottom:18px">
+      <label class="field-label">Password</label>
+      <input class="field-input" type="password" id="auth-pw" placeholder="••••••••"
+        autocomplete="current-password">
+    </div>
+    <button class="btn-confirm" id="auth-btn" onclick="authSubmit()" style="margin-bottom:0">Sign in</button>
+    <div class="auth-toggle">
+      <span id="auth-toggle-txt">Don't have an account?</span>
+      <a onclick="toggleAuthMode()"> Create one</a>
+    </div>
+  </div>
+  <div class="auth-secure">
+    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    Data encrypted &amp; stored securely with Firebase
+  </div>
+</div>
+
+<!-- ── APP SHELL ────────────────────────────────────────────────────────────── -->
+<div class="shell">
   <div class="topbar">
     <div class="topbar-brand">Loopli</div>
     <div class="topbar-right">
@@ -245,6 +312,7 @@ body{
   <div class="scroll-area" id="main"></div>
 
   <div class="bottom-nav">
+    <div class="bnav-scroll">
     <div class="bnav active" onclick="go('doll')" id="bn-doll">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>Doll
     </div>
@@ -254,11 +322,21 @@ body{
     <div class="bnav" onclick="go('rattle')" id="bn-rattle">
       <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Rattle
     </div>
+    <div class="bnav" onclick="go('icord')" id="bn-icord">
+      <svg viewBox="0 0 24 24"><path d="M4 7c4 0 4 10 8 10S16 7 20 7" stroke-linecap="round"/></svg>I-cord
+    </div>
+    <div class="bnav" onclick="go('set')" id="bn-set">
+      <svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 9l4-5h10l4 5M12 9v12M3 14h18"/></svg>Set
+    </div>
+    <div class="bnav" onclick="go('blanket')" id="bn-blanket">
+      <svg viewBox="0 0 24 24"><path d="M3 7c2-2 4 0 6-2s4-2 6 0 4 2 6 0M3 12c2-2 4 0 6-2s4-2 6 0 4 2 6 0M3 17c2-2 4 0 6-2s4-2 6 0 4 2 6 0"/></svg>Blanket
+    </div>
     <div class="bnav" onclick="go('log')" id="bn-log">
       <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 12h6M9 16h4"/></svg>Log
     </div>
     <div class="bnav" onclick="go('more')" id="bn-more">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>More
+    </div>
     </div>
   </div>
 </div>
@@ -266,37 +344,160 @@ body{
 <div class="toast-wrap"><div class="toast" id="toast"></div></div>
 <input type="file" id="file-inp" accept=".json">
 
+<!-- ── CUSTOM MATERIAL MODAL ──────────────────────────────────────────────────── -->
+<div id="cmat-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:flex-end" onclick="if(event.target===this)closeCMat()">
+  <div style="background:var(--card);border-radius:20px 20px 0 0;width:100%;max-height:90vh;overflow-y:auto;padding:20px 16px calc(var(--safe-b) + 24px)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div id="cmat-title" style="font-size:18px;font-weight:700;color:var(--ink)">Add Material</div>
+      <button onclick="closeCMat()" style="background:none;border:none;font-size:24px;color:var(--ink3);cursor:pointer;line-height:1;padding:4px">✕</button>
+    </div>
+    <div class="field-full">
+      <label class="field-label">Material name</label>
+      <input class="field-input hl" id="cmat-n" type="text" placeholder="e.g. Felt fabric">
+    </div>
+    <div class="field-row">
+      <div>
+        <label class="field-label">Pack price ($)</label>
+        <input class="field-input" id="cmat-pp" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+      </div>
+      <div>
+        <label class="field-label">Pack qty</label>
+        <input class="field-input" id="cmat-pq" type="number" min="1" step="1" inputmode="numeric" placeholder="1">
+      </div>
+    </div>
+    <div class="field-full" style="margin-top:10px">
+      <label class="field-label">Unit (e.g. pcs, gram, meter)</label>
+      <input class="field-input" id="cmat-u" type="text" placeholder="pcs">
+    </div>
+    <div style="margin-top:16px">
+      <div class="field-label" style="margin-bottom:10px">Add to product tabs</div>
+      <div id="cmat-tabs" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+    <button class="btn-pri" onclick="saveCMat()" style="margin-top:20px;width:100%">Save material</button>
+    <button id="cmat-del" onclick="deleteCMat()" style="display:none;margin-top:10px;width:100%;padding:13px;background:var(--redl);color:var(--red);border:1px solid #fca5a5;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Delete material</button>
+  </div>
+</div>
+
+<!-- ── EDIT MODAL ────────────────────────────────────────────────────────────── -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:flex-end">
+  <div style="background:var(--card);border-radius:20px 20px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:20px 16px calc(var(--safe-b) + 24px)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div style="font-size:18px;font-weight:700;color:var(--ink)">Edit Product</div>
+      <button onclick="closeEdit()" style="background:none;border:none;font-size:24px;color:var(--ink3);cursor:pointer;line-height:1;padding:4px">✕</button>
+    </div>
+    <div class="field-full">
+      <label class="field-label">Product name</label>
+      <input class="field-input hl" type="text" id="edit-name" placeholder="Product name">
+    </div>
+    <div class="field-row">
+      <div>
+        <label class="field-label">Qty made</label>
+        <input class="field-input" type="number" min="1" step="1" inputmode="numeric" id="edit-qty">
+      </div>
+      <div>
+        <label class="field-label">Sell price ($)</label>
+        <input class="field-input hl" type="number" min="0" step="0.5" inputmode="decimal" id="edit-sell">
+      </div>
+    </div>
+    <div class="field-row">
+      <div>
+        <label class="field-label">Time (hours)</label>
+        <input class="field-input" type="number" min="0" step="0.5" inputmode="decimal" id="edit-time">
+      </div>
+      <div id="edit-size-wrap">
+        <label class="field-label" id="edit-size-lbl">Size (cm)</label>
+        <input class="field-input" type="number" min="0" step="0.5" inputmode="decimal" id="edit-size">
+      </div>
+    </div>
+    <div class="field-row" id="edit-lh-wrap" style="display:none">
+      <div>
+        <label class="field-label">Length (cm)</label>
+        <input class="field-input" type="number" min="0" step="0.5" inputmode="decimal" id="edit-sizeL">
+      </div>
+      <div>
+        <label class="field-label">Width (cm)</label>
+        <input class="field-input" type="number" min="0" step="0.5" inputmode="decimal" id="edit-sizeH">
+      </div>
+    </div>
+    <div class="field-full">
+      <label class="field-label">Date</label>
+      <input class="field-input" type="date" id="edit-date">
+    </div>
+    <div class="card" style="margin-top:4px">
+      <div class="card-label">Materials used</div>
+      <div id="edit-mats"></div>
+    </div>
+    <button class="btn-confirm" onclick="saveLogEdit()" style="margin-top:4px">
+      <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+      Save changes
+    </button>
+  </div>
+</div>
+
+<!-- ── FIREBASE SDKs (must load before app script) ──────────────────────────── -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 <script>
+// ─────────────────────────────────────────────────────────────────────────────
+//  FIREBASE SETUP
+//  Replace the placeholder values below with your own Firebase project config.
+//  Get it from: console.firebase.google.com
+//    → Your project → Project Settings → Your apps → Web app → SDK setup
+// ─────────────────────────────────────────────────────────────────────────────
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyCkuQ-IP-24corPOb7VmjWtqWJrwbaH-hA",
+  authDomain:        "loopli-14a53.firebaseapp.com",
+  projectId:         "loopli-14a53",
+  storageBucket:     "loopli-14a53.firebasestorage.app",
+  messagingSenderId: "730672200948",
+  appId:             "1:730672200948:web:cc2060c939904be0ad32a1"
+};
+
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
 // ── MATERIALS ─────────────────────────────────────────────────────────────────
 const MAT={
   pkg:[
-    {id:1,n:"Packaging bags",u:"pcs",c:3.5/12},
-    {id:2,n:"Packaging box",u:"pcs",c:5.0/24},
-    {id:3,n:"Laser print (box)",u:"pcs",c:2.0/1},
-    {id:4,n:"Paper packaging",u:"pcs",c:4.0/30},
-    {id:5,n:"Stickers",u:"pcs",c:3.0/24},
-    {id:6,n:"Ribbon",u:"meter",c:2.0/21},
-    {id:7,n:"Tag card",u:"pcs",c:2.0/16},
+    {id:1,n:"Packaging bags",u:"pcs",pp:3.5,pq:12,c:3.5/12},
+    {id:2,n:"Packaging box",u:"pcs",pp:5.0,pq:24,c:5.0/24},
+    {id:3,n:"Laser print (box)",u:"pcs",pp:2.0,pq:1,c:2.0/1},
+    {id:4,n:"Paper packaging",u:"pcs",pp:4.0,pq:30,c:4.0/30},
+    {id:5,n:"Stickers",u:"pcs",pp:3.0,pq:24,c:3.0/24},
+    {id:6,n:"Ribbon",u:"meter",pp:2.0,pq:21,c:2.0/21},
+    {id:7,n:"Tag card",u:"pcs",pp:2.0,pq:16,c:2.0/16},
   ],
   doll:[
-    {id:8,n:"Safety eye",u:"pcs",c:3.0/100},
-    {id:9,n:"Yarn",u:"gram",c:4.0/100},
-    {id:10,n:"Stuffing",u:"gram",c:25.0/2000},
-    {id:11,n:"Silicone",u:"pcs",c:2.0/12},
+    {id:8,n:"Safety eye",u:"pcs",pp:3.0,pq:100,c:3.0/100},
+    {id:9,n:"Yarn",u:"gram",pp:4.0,pq:100,c:4.0/100},
+    {id:10,n:"Stuffing",u:"gram",pp:25.0,pq:2000,c:25.0/2000},
+    {id:11,n:"Silicone",u:"pcs",pp:2.0,pq:12,c:2.0/12},
   ],
   pac:[
-    {id:12,n:"Clip for pacifier",u:"pcs",c:4.0/5},
-    {id:13,n:"Beads",u:"pcs",c:3.0/30},
-    {id:14,n:"Wood letter",u:"pcs",c:5.0/26},
-    {id:15,n:"Silicone beads",u:"pcs",c:5.0/10},
-    {id:16,n:"Pacifier string",u:"meter",c:3.0/100},
-    {id:17,n:"Laser print (clip)",u:"pcs",c:1.0/1},
+    {id:12,n:"Clip for pacifier",u:"pcs",pp:4.0,pq:5,c:4.0/5},
+    {id:13,n:"Beads",u:"pcs",pp:3.0,pq:30,c:3.0/30},
+    {id:14,n:"Wood letter",u:"pcs",pp:5.0,pq:26,c:5.0/26},
+    {id:15,n:"Silicone beads",u:"pcs",pp:5.0,pq:10,c:5.0/10},
+    {id:16,n:"Pacifier string",u:"meter",pp:3.0,pq:100,c:3.0/100},
+    {id:17,n:"Laser print (clip)",u:"pcs",pp:1.0,pq:1,c:1.0/1},
   ],
   rat:[
-    {id:18,n:"Wood ring",u:"pcs",c:3.0/30},
-    {id:19,n:"Bell",u:"pcs",c:3.0/10},
+    {id:18,n:"Wood ring",u:"pcs",pp:3.0,pq:30,c:3.0/30},
+    {id:19,n:"Bell",u:"pcs",pp:3.0,pq:10,c:3.0/10},
+    {id:8,n:"Safety eye",u:"pcs",pp:3.0,pq:100,c:3.0/100},
+    {id:9,n:"Yarn",u:"gram",pp:4.0,pq:100,c:4.0/100},
+    {id:10,n:"Stuffing",u:"gram",pp:25.0,pq:2000,c:25.0/2000},
   ],
-  wire:[{id:20,n:"Wire",u:"gram",c:5.0/130}]
+  wire:[{id:20,n:"Wire",u:"gram",pp:5.0,pq:130,c:5.0/130}],
+  blanket:[
+    {id:21,n:"Blanket price",u:"pcs",pp:1.0,pq:1,c:1.0},
+  ],
+  knit:[
+    {id:23,n:"Knitting cost",u:"pcs",pp:1.0,pq:1,c:1.0},
+  ]
 };
 const SECS={
   doll:[
@@ -306,39 +507,63 @@ const SECS={
   pacifier:[
     {lbl:"Packaging",bg:"#e0f2fe",fg:"#0369a1",mats:MAT.pkg},
     {lbl:"Pacifier materials",bg:"#fce7f3",fg:"#be185d",mats:MAT.pac},
+    {lbl:"Yarn",bg:"#dbeafe",fg:"#1d4ed8",mats:[MAT.doll[1]]},
   ],
   rattle:[
     {lbl:"Packaging",bg:"#e0f2fe",fg:"#0369a1",mats:MAT.pkg},
     {lbl:"Rattle materials",bg:"#fef3c7",fg:"#b45309",mats:MAT.rat},
+  ],
+  icord:[
+    {lbl:"Packaging",bg:"#e0f2fe",fg:"#0369a1",mats:MAT.pkg},
     {lbl:"Wire",bg:"#f3e8ff",fg:"#7c3aed",mats:MAT.wire},
+    {lbl:"Yarn",bg:"#dbeafe",fg:"#1d4ed8",mats:[MAT.doll[1]]},
+  ],
+  blanket:[
+    {lbl:"Packaging",bg:"#e0f2fe",fg:"#0369a1",mats:MAT.pkg},
+    {lbl:"Blanket cost",bg:"#fff1f2",fg:"#be123c",mats:MAT.blanket},
+    {lbl:"Knit cost",bg:"#f0fdf4",fg:"#15803d",mats:MAT.knit},
+  ],
+  set:[
+    {lbl:"Packaging",bg:"#e0f2fe",fg:"#0369a1",mats:MAT.pkg},
+    {lbl:"Doll",bg:"#dbeafe",fg:"#1d4ed8",mats:MAT.doll},
+    {lbl:"Pacifier",bg:"#fce7f3",fg:"#be185d",mats:[...MAT.pac,MAT.doll[1]]},
+    {lbl:"Rattle",bg:"#fef3c7",fg:"#b45309",mats:[MAT.rat[0],MAT.rat[1],MAT.doll[1]]},
+    {lbl:"I-cord",bg:"#f3e8ff",fg:"#7c3aed",mats:[MAT.wire[0],MAT.doll[1]]},
   ]
 };
 
+const ALL_MATS=[...MAT.pkg,...MAT.doll,...MAT.pac,...MAT.rat,...MAT.wire,...MAT.blanket,...MAT.knit];
+const MAT_BY_NAME={};
+ALL_MATS.forEach(m=>{MAT_BY_NAME[m.n]=m.id;});
+
 // ── STATE ─────────────────────────────────────────────────────────────────────
 const KEY='loopli_v5';
-function load(){
-  try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}
+let currentUser=null;
+let firestoreUnsub=null;
+let saveTimer=null;
+let ignoreNextSnap=false;
+let authMode='signin';
+let pendingAutoFill=null;
+let editingIdx=null;
+let logSearch='';
+
+function defaultState(){
   return{
     log:[],
+    matPrices:{},
+    customMats:[],
     c:{
-      doll:{name:'',sell:'',qty_made:1,qty:{}},
-      pacifier:{name:'',sell:'',qty_made:1,qty:{}},
-      rattle:{name:'',sell:'',qty_made:1,qty:{}}
+      doll:{name:'',sell:'',qty_made:1,time:'',size:'',sizeL:'',sizeH:'',qty:{}},
+      pacifier:{name:'',sell:'',qty_made:1,time:'',size:'',sizeL:'',sizeH:'',qty:{}},
+      rattle:{name:'',sell:'',qty_made:1,time:'',size:'',sizeL:'',sizeH:'',qty:{}},
+      icord:{name:'',sell:'',qty_made:1,time:'',size:'',sizeL:'',sizeH:'',qty:{}},
+      set:{name:'',sell:'',qty_made:1,time:'',size:'',sizeL:'',sizeH:'',qty:{}},
+      blanket:{name:'',sell:'',qty_made:1,time:'',size:'',sizeL:'',sizeH:'',qty:{}}
     }
   };
 }
-function save(){
-  try{
-    localStorage.setItem(KEY,JSON.stringify(S));
-    const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    const d=document.getElementById('sdot');
-    const l=document.getElementById('slbl');
-    if(d)d.style.background='#22c55e';
-    if(l)l.textContent='Saved '+t;
-  }catch(e){}
-}
 
-let S=load();
+let S=defaultState();
 let tab='doll';
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -347,41 +572,79 @@ const usd=n=>(isNaN(n)||!isFinite(n))?'$—':'$'+Math.abs(n).toLocaleString('en-
 const pct=n=>(isNaN(n)||!isFinite(n))?'—':(n*100).toFixed(1)+'%';
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 function gq(type,id){return parseFloat(S.c[type]?.qty?.[id])||0}
+function getMC(m){
+  const p=S.matPrices?.[m.id];
+  return(p&&p.pp>0&&p.pq>0)?p.pp/p.pq:m.c;
+}
 function cost(type){
-  let t=0;SECS[type].forEach(s=>s.mats.forEach(m=>{t+=gq(type,m.id)*m.c}));return t;
+  let t=0;
+  SECS[type].forEach(s=>s.mats.forEach(m=>{t+=gq(type,m.id)*getMC(m)}));
+  (S.customMats||[]).filter(m=>m.tabs.includes(type)).forEach(m=>{t+=gq(type,m.id)*getMC(m)});
+  return t;
 }
 function toast(msg,kind){
   const t=$('toast');t.textContent=msg;
   t.className='toast '+(kind==='err'?'err':'ok')+' show';
   setTimeout(()=>t.classList.remove('show'),2500);
 }
+function setSaved(text){
+  const d=$('sdot'),l=$('slbl');
+  if(d)d.style.background='#22c55e';
+  if(l)l.textContent=text;
+}
+
+// ── SAVE ──────────────────────────────────────────────────────────────────────
+function save(){
+  // Write to LocalStorage immediately for instant UI feedback
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  setSaved('Saving…');
+
+  if(!currentUser)return;
+  if(saveTimer)clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{
+      ignoreNextSnap=true;
+      await db.collection('users').doc(currentUser.uid).set(S);
+      const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      setSaved('Saved '+t);
+    }catch(e){
+      ignoreNextSnap=false;
+      setSaved('Save failed');
+    }
+  },1500);
+}
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 function go(t){
   tab=t;
-  ['doll','pacifier','rattle','log','more'].forEach(k=>{
+  ['doll','pacifier','rattle','icord','set','blanket','log','more'].forEach(k=>{
     const b=$('bn-'+k);if(b)b.classList.toggle('active',k===t);
   });
   render();
   const m=$('main');if(m)m.scrollTop=0;
+  const nb=$('bn-'+t);const nav=document.querySelector('.bnav-scroll');
+  if(nav&&nb)nav.scrollLeft=nb.offsetLeft-nav.clientWidth/2+nb.clientWidth/2;
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function render(){
   const m=$('main');if(!m)return;
-  if(tab==='log')m.innerHTML=rLog();
+  if(tab==='log'){m.innerHTML=rLog();if(logSearch)slogSearch(logSearch);}
   else if(tab==='more')m.innerHTML=rMore();
   else m.innerHTML=rCalc(tab);
 }
 
 // ── CALCULATOR ────────────────────────────────────────────────────────────────
 function rCalc(type){
+  if(!S.c[type])S.c[type]={name:'',sell:'',qty_made:1,time:'',size:'',sizeL:'',sizeH:'',qty:{}};
   const s=S.c[type];
   const unitCost=cost(type);
   const sell=parseFloat(s.sell)||0;
   const qty=parseInt(s.qty_made)||1;
+  const timeHr=parseFloat(s.time)||0;
   const profit=sell-unitCost;
   const margin=sell>0?profit/sell:NaN;
+  const hourly=timeHr>0?profit/timeHr:NaN;
   const isNeg=profit<0&&sell>0;
 
   let shtml='';
@@ -389,7 +652,7 @@ function rCalc(type){
     shtml+=`<span class="sec-label" style="background:${sec.bg};color:${sec.fg}">${sec.lbl}</span>`;
     sec.mats.forEach(m=>{
       const q=gq(type,m.id);
-      const lc=q>0?usd(q*m.c):'';
+      const lc=q>0?usd(q*getMC(m)):'';
       shtml+=`<div class="mat-row">
         <span class="mat-name">${m.n}</span>
         <div class="mat-qty-wrap">
@@ -402,6 +665,24 @@ function rCalc(type){
       </div>`;
     });
   });
+  const cMatsForType=(S.customMats||[]).filter(m=>m.tabs.includes(type));
+  if(cMatsForType.length){
+    shtml+=`<span class="sec-label" style="background:#f0fdf4;color:#065f46">Custom</span>`;
+    cMatsForType.forEach(m=>{
+      const q=gq(type,m.id);
+      const lc=q>0?usd(q*getMC(m)):'';
+      shtml+=`<div class="mat-row">
+        <span class="mat-name">${m.n}</span>
+        <div class="mat-qty-wrap">
+          <input class="mat-qty" type="number" min="0" step="0.1" inputmode="decimal"
+            value="${q||''}" placeholder="0"
+            oninput="sqty('${type}',${m.id},this.value)">
+          <span class="mat-unit">${m.u}</span>
+          <span class="mat-lc">${lc}</span>
+        </div>
+      </div>`;
+    });
+  }
 
   return`
     <div class="profit-hero${isNeg?' neg':''}">
@@ -411,7 +692,13 @@ function rCalc(type){
         <div class="ph-stat"><div class="ph-stat-val">${pct(margin)}</div><div class="ph-stat-lbl">margin</div></div>
         <div class="ph-stat"><div class="ph-stat-val">${usd(unitCost)}</div><div class="ph-stat-lbl">unit cost</div></div>
         <div class="ph-stat"><div class="ph-stat-val">${usd(unitCost*qty)}</div><div class="ph-stat-lbl">total cost ×${qty}</div></div>
+        ${timeHr>0?`<div class="ph-stat" id="ph-hourly"><div class="ph-stat-val">${usd(hourly)}/hr</div><div class="ph-stat-lbl">hourly rate</div></div>`:'<div class="ph-stat" id="ph-hourly" style="display:none"></div>'}
       </div>
+    </div>
+
+    <div id="autofill-hint" style="display:none;background:var(--gl);border:1px solid var(--border2);border-radius:10px;padding:11px 14px;margin-bottom:12px;align-items:center;justify-content:space-between;gap:10px">
+      <span style="font-size:13px;color:var(--g);font-weight:500">Found previous settings — load them?</span>
+      <button onclick="applyAutoFill()" style="padding:7px 16px;background:var(--g);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;font-family:inherit">Load</button>
     </div>
 
     <button class="btn-confirm" onclick="confirm_add('${type}')">
@@ -438,6 +725,36 @@ function rCalc(type){
             placeholder="0.00" value="${s.sell||''}" oninput="ssell('${type}',this.value)">
         </div>
       </div>
+      ${type==='icord'?`
+      <div class="field-full">
+        <label class="field-label">Time to make (hours)</label>
+        <input class="field-input" type="number" min="0" step="0.5" inputmode="decimal"
+          placeholder="e.g. 1.5" value="${s.time||''}" oninput="sqt('${type}',this.value)">
+      </div>
+      <div class="field-row">
+        <div>
+          <label class="field-label">Length (cm)</label>
+          <input class="field-input" type="number" min="0" step="0.5" inputmode="decimal"
+            placeholder="e.g. 30" value="${s.sizeL||''}" oninput="ssizeL('${type}',this.value)">
+        </div>
+        <div>
+          <label class="field-label">Width (cm)</label>
+          <input class="field-input" type="number" min="0" step="0.5" inputmode="decimal"
+            placeholder="e.g. 10" value="${s.sizeH||''}" oninput="ssizeH('${type}',this.value)">
+        </div>
+      </div>`:`
+      <div class="field-row">
+        <div>
+          <label class="field-label">Time to make (hours)</label>
+          <input class="field-input" type="number" min="0" step="0.5" inputmode="decimal"
+            placeholder="e.g. 1.5" value="${s.time||''}" oninput="sqt('${type}',this.value)">
+        </div>
+        <div>
+          <label class="field-label">Size (cm)</label>
+          <input class="field-input" type="number" min="0" step="0.5" inputmode="decimal"
+            placeholder="e.g. 25" value="${s.size||''}" oninput="ssize('${type}',this.value)">
+        </div>
+      </div>`}
     </div>
 
     <div class="card">
@@ -453,26 +770,42 @@ function rLog(){
   const tCost=log.reduce((a,r)=>a+r.cost*r.qty,0);
   const tP=tRev-tCost;
 
+  const nameCounts={};
+  log.forEach(r=>{nameCounts[r.name]=(nameCounts[r.name]||0)+1;});
+
   let cards='';
   if(!log.length){
     cards=`<div class="empty"><span class="empty-icon">📋</span><p>No products yet.<br>Confirm an entry from the calculator.</p></div>`;
-  } else {
+  }else{
     [...log].reverse().forEach((r,ri)=>{
       const i=log.length-1-ri;
       const rev=r.sell*r.qty,cost=r.cost*r.qty,profit=rev-cost;
       const neg=profit<0;
-      cards+=`<div class="log-card">
+      const cnt=nameCounts[r.name]||1;
+      const hasMats=r.mats&&r.mats.length>0;
+      const matsHtml=hasMats?r.mats.map(m=>`
+        <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--ink2)">${m.n}</span>
+          <span style="font-family:var(--mono);color:var(--ink3)">${m.q} ${m.u} · <span style="color:var(--g)">${usd(m.lc)}</span></span>
+        </div>`).join(''):'';
+      cards+=`<div class="log-card" data-logname="${r.name.replace(/"/g,'&quot;')}">
         <div class="log-card-top">
           <div>
             <div class="log-card-name">${r.name}</div>
             <div class="log-card-meta" style="margin-top:4px">
               <span class="chip chip-${r.type}">${r.type}</span>
               <span style="font-size:11px;color:var(--ink3)">${r.date}</span>
+              ${r.time?`<span style="font-size:11px;color:var(--ink3)">⏱ ${r.time} hr</span>`:''}
+              ${r.type==='icord'&&(r.sizeL||r.sizeH)?`<span style="font-size:11px;color:var(--ink3)">${r.sizeL||'?'}×${r.sizeH||'?'} cm (L×W)</span>`:r.size?`<span style="font-size:11px;color:var(--ink3)">${r.size} cm</span>`:''}
+              ${cnt>1?`<span style="font-size:11px;background:var(--gl);color:var(--g);padding:2px 8px;border-radius:10px;font-weight:600">×${cnt} made</span>`:''}
             </div>
           </div>
           <div style="text-align:right">
             <div class="log-card-profit${neg?' neg':''}">${usd(profit)}</div>
-            <button class="log-card-del" onclick="delLog(${i})">✕</button>
+            <div style="display:flex;gap:2px;justify-content:flex-end;margin-top:4px">
+              <button class="log-card-del" onclick="editLog(${i})" style="color:var(--ink3);font-size:16px">✏️</button>
+              <button class="log-card-del" onclick="delLog(${i})">✕</button>
+            </div>
           </div>
         </div>
         <div class="log-card-stats">
@@ -481,6 +814,15 @@ function rLog(){
           <div class="log-stat"><span>Sell price</span><span>${usd(r.sell)}</span></div>
           <div class="log-stat"><span>Revenue</span><span>${usd(rev)}</span></div>
         </div>
+        ${hasMats?`
+        <div id="ld-${i}" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ink3);margin-bottom:6px">Materials used</div>
+          ${matsHtml}
+        </div>
+        <button id="lb-${i}" onclick="toggleMats(${i})"
+          style="width:100%;margin-top:10px;padding:7px;background:var(--gxl);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--ink3);cursor:pointer;font-family:inherit;font-weight:500">
+          ▼ Show materials
+        </button>`:''}
       </div>`;
     });
   }
@@ -488,6 +830,12 @@ function rLog(){
   return`
     <div class="ptitle">Product Log</div>
     <div class="psub">${log.length} product${log.length!==1?'s':''}</div>
+    <div style="margin-bottom:14px">
+      <input class="field-input" type="search" placeholder="Search by product name..."
+        value="${logSearch.replace(/"/g,'&quot;')}"
+        oninput="slogSearch(this.value)"
+        style="width:100%;padding:10px 14px;font-size:14px">
+    </div>
 
     ${log.length?`<div class="kpi-grid">
       <div class="kpi"><div class="kpi-lbl">Total revenue</div><div class="kpi-val">${usd(tRev)}</div></div>
@@ -505,7 +853,7 @@ function rLog(){
     </div>`:''}`;
 }
 
-// ── MORE (Dashboard + Backup) ─────────────────────────────────────────────────
+// ── MORE ──────────────────────────────────────────────────────────────────────
 function rMore(){
   const log=S.log;
   const tRev=log.reduce((a,r)=>a+r.sell*r.qty,0);
@@ -520,8 +868,7 @@ function rMore(){
     return{n:rows.length,rev,cost,profit:rev-cost,m:rev>0?(rev-cost)/rev:NaN};
   }
 
-  const types=[{k:'doll',l:'Doll',chip:'chip-doll'},{k:'pacifier',l:'Pacifier',chip:'chip-pacifier'},{k:'rattle',l:'Rattle',chip:'chip-rattle'}];
-
+  const types=[{k:'doll',l:'Doll',chip:'chip-doll'},{k:'pacifier',l:'Pacifier',chip:'chip-pacifier'},{k:'rattle',l:'Rattle',chip:'chip-rattle'},{k:'icord',l:'I-cord',chip:'chip-icord'},{k:'set',l:'Set',chip:'chip-set'},{k:'blanket',l:'Blanket',chip:'chip-blanket'}];
   const tcards=types.map(t=>{
     const d=bt(t.k);
     return`<div class="type-card">
@@ -535,11 +882,25 @@ function rMore(){
   }).join('');
 
   const count=log.length;
-  const size=(JSON.stringify(S).length/1024).toFixed(1);
+  const email=currentUser?.email||'';
 
   return`
     <div class="ptitle">More</div>
-    <div class="psub">Dashboard &amp; backup</div>
+    <div class="psub">Dashboard &amp; account</div>
+
+    <div class="card">
+      <div class="card-label">Account</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;gap:12px">
+        <div style="min-width:0">
+          <div style="font-size:15px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${email}</div>
+          <div style="font-size:12px;color:var(--g);margin-top:3px;display:flex;align-items:center;gap:5px">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--g);display:inline-block;flex-shrink:0"></span>
+            Data syncs automatically
+          </div>
+        </div>
+        <button class="btn-sec" onclick="doSignOut()" style="flex-shrink:0">Sign out</button>
+      </div>
+    </div>
 
     <div class="card">
       <div class="card-label">Overview</div>
@@ -554,45 +915,111 @@ function rMore(){
     ${tcards}
 
     <div class="card">
+      <div class="card-label">Material Prices</div>
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;line-height:1.6">Enter the pack price and quantity you buy. The cost per unit updates automatically across all calculators.</p>
+      ${[
+        {lbl:'Packaging',bg:'#e0f2fe',fg:'#0369a1',mats:MAT.pkg},
+        {lbl:'Doll',bg:'#dbeafe',fg:'#1d4ed8',mats:MAT.doll},
+        {lbl:'Pacifier',bg:'#fce7f3',fg:'#be185d',mats:MAT.pac},
+        {lbl:'Rattle',bg:'#fef3c7',fg:'#b45309',mats:MAT.rat},
+        {lbl:'Wire',bg:'#f3e8ff',fg:'#7c3aed',mats:MAT.wire},
+        {lbl:'Blanket',bg:'#fff1f2',fg:'#be123c',mats:MAT.blanket},
+        {lbl:'Knit',bg:'#f0fdf4',fg:'#15803d',mats:MAT.knit},
+      ].map(sec=>`
+        <span class="sec-label" style="background:${sec.bg};color:${sec.fg}">${sec.lbl}</span>
+        ${sec.mats.map(m=>{
+          const p=S.matPrices?.[m.id];
+          const pp=p?.pp??m.pp;
+          const pq=p?.pq??m.pq;
+          const custom=p&&(p.pp>0||p.pq>0);
+          return`<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+            <div style="font-size:13px;font-weight:500;color:var(--ink2);margin-bottom:8px">${m.n}${custom?'<span style="font-size:10px;color:var(--g);font-weight:700;margin-left:6px">CUSTOM</span>':''}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end">
+              <div>
+                <div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Pack price ($)</div>
+                <input class="field-input" type="number" min="0" step="0.01" inputmode="decimal"
+                  value="${pp}" oninput="setMP(${m.id},'pp',this.value)"
+                  style="padding:9px 10px;font-size:14px">
+              </div>
+              <div>
+                <div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Qty (${m.u})</div>
+                <input class="field-input" type="number" min="0" step="1" inputmode="numeric"
+                  value="${pq}" oninput="setMP(${m.id},'pq',this.value)"
+                  style="padding:9px 10px;font-size:14px">
+              </div>
+              <div style="padding-bottom:4px;text-align:right">
+                <div style="font-size:10px;color:var(--ink3);margin-bottom:2px">per ${m.u}</div>
+                <div style="font-size:15px;font-weight:700;font-family:var(--mono);color:var(--g)">${usd(getMC(m))}</div>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      `).join('')}
+      ${(S.customMats||[]).length?`
+        <span class="sec-label" style="background:#f0fdf4;color:#065f46;margin-top:8px">Custom</span>
+        ${(S.customMats||[]).map(m=>`
+          <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <div style="font-size:13px;font-weight:500;color:var(--ink2)">${m.n}</div>
+              <button onclick="openCMat(${m.id})" style="padding:4px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:11px;color:var(--ink3);cursor:pointer;font-family:inherit">Edit</button>
+            </div>
+            <div style="font-size:12px;color:var(--ink3)">${usd(getMC(m))} per ${m.u} &nbsp;·&nbsp; ${m.tabs.map(t=>cap(t)).join(', ')||'no tab'}</div>
+          </div>`).join('')}
+      `:''}
+      <button onclick="openCMat()" style="width:100%;margin-top:14px;padding:13px;background:var(--gl);border:1.5px dashed var(--border2);border-radius:var(--r);font-size:14px;font-weight:600;color:var(--g);cursor:pointer;font-family:inherit">+ Add custom material</button>
+    </div>
+
+    <div class="card">
       <div class="card-label">Backup &amp; Restore</div>
-      <p style="font-size:13px;color:var(--ink3);margin-bottom:12px;line-height:1.6">${count} product${count!==1?'s':''} · ~${size} KB · To use on another phone, download the backup and import it on the other device.</p>
-      <div class="btn-row" style="margin-bottom:8px">
-        <button class="btn-pri" onclick="copyLink()" style="flex:1;background:#1d4ed8">
-          <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-          Copy sync link
-        </button>
-      </div>
-      <p style="font-size:12px;color:var(--ink3);margin-bottom:12px;text-align:center">Open the link on your phone to load all data instantly</p>
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:12px;line-height:1.6">
+        ${count} product${count!==1?'s':''} · Your data is automatically saved to the cloud.
+        Use these options for manual backups.
+      </p>
       <div class="btn-row" style="margin-bottom:12px">
         <button class="btn-pri" onclick="expJSON()" style="flex:1">
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
           Download backup
         </button>
       </div>
-      <div style="margin-bottom:12px">
-        <label class="field-label">Paste sync link</label>
-        <div style="display:flex;gap:8px">
-          <input class="field-input" type="url" id="paste-link-inp" placeholder="Paste your sync link here…" style="flex:1;font-size:14px">
-          <button class="btn-sec" onclick="loadPastedLink()" style="flex-shrink:0;padding:12px 16px;font-weight:600">Load</button>
-        </div>
-      </div>
       <div class="drop-zone" onclick="$('file-inp').click()" ondragover="event.preventDefault()" ondrop="dropF(event)">
         <p><strong>Tap to import backup</strong></p>
         <p style="margin-top:4px;font-size:12px">Choose a .json backup file</p>
-      </div>
-      <div class="div"></div>
-      <div class="card-label">How to move data to another phone</div>
-      <div class="step-list">
-        ${['Tap "Download backup" above','Send the .json file to your other phone via WhatsApp, iMessage, or email','Open this HTML file on the other phone in Safari','Go to More → tap "Import backup" → choose the file','All your data appears instantly'].map((s,i)=>`
-        <div class="step"><span class="step-num">${i+1}</span><span class="step-text">${s}</span></div>`).join('')}
       </div>
     </div>`;
 }
 
 // ── ACTIONS ───────────────────────────────────────────────────────────────────
-function sname(t,v){S.c[t].name=v;upd(t);save()}
+function sname(t,v){
+  S.c[t].name=v;upd(t);save();
+  const name=v.trim();
+  const hint=document.getElementById('autofill-hint');
+  if(name.length>1){
+    const match=[...S.log].reverse().find(r=>r.type===t&&r.name.toLowerCase()===name.toLowerCase()&&r.mats&&r.mats.length);
+    if(match){
+      pendingAutoFill={type:t,entry:match};
+      if(hint)hint.style.display='flex';
+    }else{
+      pendingAutoFill=null;
+      if(hint)hint.style.display='none';
+    }
+  }else{
+    pendingAutoFill=null;
+    if(hint)hint.style.display='none';
+  }
+}
 function ssell(t,v){S.c[t].sell=v;upd(t);save()}
 function sqm(t,v){S.c[t].qty_made=parseInt(v)||1;upd(t);save()}
+function sqt(t,v){S.c[t].time=v;upd(t);save()}
+function ssize(t,v){S.c[t].size=v;save()}
+function ssizeL(t,v){S.c[t].sizeL=v;save()}
+function ssizeH(t,v){S.c[t].sizeH=v;save()}
+function slogSearch(v){
+  logSearch=v;
+  const q=v.toLowerCase().trim();
+  document.querySelectorAll('[data-logname]').forEach(el=>{
+    el.style.display=(!q||el.dataset.logname.toLowerCase().includes(q))?'':'none';
+  });
+}
 function sqty(t,id,v){
   if(!S.c[t].qty)S.c[t].qty={};
   S.c[t].qty[id]=parseFloat(v)||0;
@@ -608,6 +1035,9 @@ function upd(type){
   const margin=sell>0?profit/sell:NaN;
   const isNeg=profit<0&&sell>0;
 
+  const timeHr=parseFloat(s.time)||0;
+  const hourly=timeHr>0?profit/timeHr:NaN;
+
   const hero=document.querySelector('.profit-hero');
   if(hero){
     hero.className='profit-hero'+(isNeg?' neg':'');
@@ -619,12 +1049,18 @@ function upd(type){
     if(stats[0])stats[0].textContent=pct(margin);
     if(stats[1])stats[1].textContent=usd(unitCost);
     if(stats[2])stats[2].textContent=usd(unitCost*qty);
+    const hEl=document.getElementById('ph-hourly');
+    if(hEl){
+      hEl.style.display=timeHr>0?'':'none';
+      const hv=hEl.querySelector('.ph-stat-val');
+      if(hv)hv.textContent=usd(hourly)+'/hr';
+    }
   }
-  // line costs
   const allMats=[];
   SECS[type].forEach(sec=>sec.mats.forEach(m=>allMats.push(m)));
+  (S.customMats||[]).filter(m=>m.tabs.includes(type)).forEach(m=>allMats.push(m));
   document.querySelectorAll('.mat-lc').forEach((el,i)=>{
-    if(allMats[i]){const m=allMats[i];const q=gq(type,m.id);el.textContent=q>0?usd(q*m.c):''}
+    if(allMats[i]){const m=allMats[i];const q=gq(type,m.id);el.textContent=q>0?usd(q*getMC(m)):''}
   });
 }
 
@@ -635,11 +1071,138 @@ function confirm_add(type){
   const unitCost=cost(type);
   const sell=parseFloat(s.sell)||0;
   const qty=parseInt(s.qty_made)||1;
-  S.log.push({name,type,qty,cost:unitCost,sell,date:new Date().toLocaleDateString('en-GB')});
-  S.c[type]={name:'',sell:'',qty_made:1,qty:{}};
+  const timeHr=parseFloat(s.time)||0;
+  const size=parseFloat(s.size)||0;
+  const sizeL=parseFloat(s.sizeL)||0;
+  const sizeH=parseFloat(s.sizeH)||0;
+  const mats=[
+    ...SECS[type].flatMap(sec=>sec.mats.map(m=>({id:m.id,n:m.n,u:m.u,q:gq(type,m.id),lc:gq(type,m.id)*getMC(m)})).filter(m=>m.q>0)),
+    ...(S.customMats||[]).filter(m=>m.tabs.includes(type)).map(m=>({id:m.id,n:m.n,u:m.u,q:gq(type,m.id),lc:gq(type,m.id)*getMC(m)})).filter(m=>m.q>0)
+  ];
+  S.log.push({name,type,qty,cost:unitCost,sell,date:new Date().toLocaleDateString('en-GB'),time:timeHr,size,sizeL,sizeH,mats});
+  S.c[type]={name:'',sell:'',qty_made:1,time:'',size:'',sizeL:'',sizeH:'',qty:{}};
   save();
   toast('"'+name+'" saved ✓');
   render();
+}
+
+function applyAutoFill(){
+  if(!pendingAutoFill)return;
+  const{type,entry}=pendingAutoFill;
+  const qty={};
+  (entry.mats||[]).forEach(m=>{
+    const id=m.id!=null?m.id:MAT_BY_NAME[m.n];
+    if(id!=null)qty[id]=m.q;
+  });
+  S.c[type].qty=qty;
+  S.c[type].sell=String(entry.sell||'');
+  S.c[type].time=String(entry.time||'');
+  S.c[type].size=String(entry.size||'');
+  S.c[type].sizeL=String(entry.sizeL||'');
+  S.c[type].sizeH=String(entry.sizeH||'');
+  S.c[type].qty_made=entry.qty||1;
+  pendingAutoFill=null;
+  save();
+  render();
+  toast('Loaded "'+entry.name+'" — edit if needed ✓');
+}
+
+function setMP(id,field,val){
+  if(!S.matPrices)S.matPrices={};
+  if(!S.matPrices[id])S.matPrices[id]={pp:0,pq:0};
+  S.matPrices[id][field]=parseFloat(val)||0;
+  save();
+}
+
+function toggleMats(i){
+  const d=document.getElementById('ld-'+i);
+  const b=document.getElementById('lb-'+i);
+  if(!d)return;
+  const open=d.style.display==='none';
+  d.style.display=open?'block':'none';
+  if(b)b.textContent=open?'▲ Hide materials':'▼ Show materials';
+}
+
+function editLog(i){
+  const r=S.log[i];
+  editingIdx=i;
+  document.getElementById('edit-name').value=r.name||'';
+  document.getElementById('edit-qty').value=r.qty||1;
+  document.getElementById('edit-sell').value=r.sell||'';
+  document.getElementById('edit-time').value=r.time||'';
+  document.getElementById('edit-size').value=r.size||'';
+  document.getElementById('edit-sizeL').value=r.sizeL||'';
+  document.getElementById('edit-sizeH').value=r.sizeH||'';
+  // Show length/height for icord, regular size for others
+  const isIcord=r.type==='icord';
+  document.getElementById('edit-size-wrap').style.display=isIcord?'none':'';
+  document.getElementById('edit-lh-wrap').style.display=isIcord?'':'none';
+  if(r.date){
+    const p=r.date.split('/');
+    if(p.length===3)document.getElementById('edit-date').value=`${p[2]}-${p[1]}-${p[0]}`;
+  }
+  // Build qty map from saved mats
+  const mq={};
+  (r.mats||[]).forEach(m=>{
+    const id=m.id!=null?m.id:MAT_BY_NAME[m.n];
+    if(id!=null)mq[id]=m.q;
+  });
+  // Render material inputs for this product type
+  let mhtml='';
+  if(SECS[r.type]){
+    SECS[r.type].forEach(sec=>{
+      mhtml+=`<span class="sec-label" style="background:${sec.bg};color:${sec.fg}">${sec.lbl}</span>`;
+      sec.mats.forEach(m=>{
+        const q=mq[m.id]||0;
+        mhtml+=`<div class="mat-row">
+          <span class="mat-name">${m.n}</span>
+          <div class="mat-qty-wrap">
+            <input class="mat-qty" type="number" min="0" step="0.1" inputmode="decimal"
+              data-mid="${m.id}" value="${q||''}" placeholder="0">
+            <span class="mat-unit">${m.u}</span>
+          </div>
+        </div>`;
+      });
+    });
+  }
+  document.getElementById('edit-mats').innerHTML=mhtml;
+  document.getElementById('edit-modal').style.display='flex';
+}
+function closeEdit(){
+  document.getElementById('edit-modal').style.display='none';
+  editingIdx=null;
+}
+function saveLogEdit(){
+  if(editingIdx===null)return;
+  const name=document.getElementById('edit-name').value.trim();
+  if(!name){toast('Product name is required','err');return}
+  const r=S.log[editingIdx];
+  r.name=name;
+  r.qty=parseInt(document.getElementById('edit-qty').value)||1;
+  r.sell=parseFloat(document.getElementById('edit-sell').value)||0;
+  r.time=parseFloat(document.getElementById('edit-time').value)||0;
+  r.size=parseFloat(document.getElementById('edit-size').value)||0;
+  r.sizeL=parseFloat(document.getElementById('edit-sizeL').value)||0;
+  r.sizeH=parseFloat(document.getElementById('edit-sizeH').value)||0;
+  const dv=document.getElementById('edit-date').value;
+  if(dv){const p=dv.split('-');r.date=`${p[2]}/${p[1]}/${p[0]}`;}
+  // Recalculate cost from edited material quantities
+  let newCost=0;
+  const newMats=[];
+  document.querySelectorAll('#edit-mats .mat-qty').forEach(el=>{
+    const id=parseInt(el.dataset.mid);
+    const q=parseFloat(el.value)||0;
+    if(q>0){
+      const m=ALL_MATS.find(x=>x.id===id);
+      if(m){const lc=q*getMC(m);newCost+=lc;newMats.push({id:m.id,n:m.n,u:m.u,q,lc});}
+    }
+  });
+  r.cost=newCost;
+  r.mats=newMats;
+  closeEdit();
+  save();
+  render();
+  toast('Changes saved ✓');
 }
 
 function delLog(i){
@@ -650,74 +1213,6 @@ function clrLog(){
   if(!S.log.length)return;
   if(!confirm('Clear all '+S.log.length+' entries?'))return;
   S.log=[];save();render();
-}
-
-// ── SYNC LINK ─────────────────────────────────────────────────────────────────
-function encodeState(s){
-  return btoa(unescape(encodeURIComponent(JSON.stringify(s))));
-}
-function decodeState(str){
-  return JSON.parse(decodeURIComponent(escape(atob(str))));
-}
-function copyLink(){
-  if(!S.log.length){toast('No log data to sync yet — confirm a product first','err');return}
-  const encoded=encodeState(S);
-  const url=location.href.split('#')[0]+'#sync='+encoded;
-  function tryClipboard(){
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(url)
-        .then(()=>toast('Sync link copied! Open on any device ✓'))
-        .catch(()=>showDialog(url));
-    }else{
-      try{
-        const ta=document.createElement('textarea');
-        ta.value=url;ta.style.position='fixed';ta.style.opacity='0';
-        document.body.appendChild(ta);ta.select();document.execCommand('copy');
-        document.body.removeChild(ta);toast('Sync link copied! Open on any device ✓');
-      }catch(e){showDialog(url)}
-    }
-  }
-  tryClipboard();
-}
-function showDialog(url){
-  const ov=document.createElement('div');
-  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;padding:16px';
-  ov.innerHTML=`<div style="background:#fff;border-radius:16px;padding:20px;width:100%;max-width:480px;margin:auto">
-    <div style="font-weight:700;font-size:16px;margin-bottom:8px">Sync link</div>
-    <p style="font-size:13px;color:#7a9085;margin-bottom:12px">Copy this link and open it on your other device</p>
-    <textarea readonly style="width:100%;border:1.5px solid #dce8e1;border-radius:10px;padding:10px;font-size:12px;height:80px;resize:none;word-break:break-all;font-family:monospace">${url}</textarea>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button onclick="this.closest('div[style]').remove();navigator.clipboard&&navigator.clipboard.writeText('${url.replace(/'/g,"\\'")}').then(()=>toast('Copied ✓'))" style="flex:1;padding:13px;background:#1e6b45;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer">Copy</button>
-      <button onclick="this.closest('div[style]').remove()" style="padding:13px 18px;background:#f0faf5;border:1.5px solid #dce8e1;border-radius:10px;font-size:15px;cursor:pointer">Close</button>
-    </div>
-  </div>`;
-  document.body.appendChild(ov);
-  ov.querySelector('textarea').select();
-}
-function loadPastedLink(){
-  const inp=document.getElementById('paste-link-inp');
-  if(!inp)return;
-  const val=inp.value.trim();
-  if(!val){toast('Paste a sync link first','err');return}
-  const idx=val.indexOf('#sync=');
-  if(idx===-1){toast('Invalid sync link','err');return}
-  try{
-    const data=decodeState(val.slice(idx+6));
-    if(!Array.isArray(data.log))throw 0;
-    const msg='Load '+data.log.length+' item'+(data.log.length!==1?'s':'')+' from sync link? This replaces your current '+S.log.length+' entries.';
-    if(confirm(msg)){S=data;save();inp.value='';go('log');toast('Synced '+data.log.length+' items ✓')}
-  }catch(e){toast('Invalid sync link','err')}
-}
-function checkURLSync(){
-  const hash=location.hash;
-  if(!hash.startsWith('#sync='))return;
-  try{
-    const data=decodeState(hash.slice(6));
-    if(!Array.isArray(data.log))return;
-    const msg='Load '+data.log.length+' item'+(data.log.length!==1?'s':'')+' from sync link? This will replace your current '+S.log.length+' entries.';
-    if(confirm(msg)){S=data;save();history.replaceState(null,'',location.pathname+location.search);toast('Synced '+data.log.length+' items ✓')}
-    else{history.replaceState(null,'',location.pathname+location.search)}
-  }catch(e){history.replaceState(null,'',location.pathname+location.search)}
 }
 
 // ── EXPORT / IMPORT ───────────────────────────────────────────────────────────
@@ -761,8 +1256,164 @@ function dropF(e){
   const r=new FileReader();r.onload=ev=>impJSON(ev.target.result);r.readAsText(f);
 }
 
-checkURLSync();
-render();
+// ── FIREBASE SYNC ─────────────────────────────────────────────────────────────
+function startSync(){
+  if(firestoreUnsub)firestoreUnsub();
+  firestoreUnsub=db.collection('users').doc(currentUser.uid).onSnapshot(snap=>{
+    if(ignoreNextSnap){ignoreNextSnap=false;return}
+    if(snap.exists){
+      const data=snap.data();
+      if(data&&Array.isArray(data.log)){
+        S=data;
+        try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+        render();
+        const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+        setSaved('Synced '+t);
+      }
+    }
+  });
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+auth.onAuthStateChanged(async user=>{
+  if(user){
+    currentUser=user;
+    try{
+      const snap=await db.collection('users').doc(user.uid).get();
+      if(snap.exists){
+        S=snap.data();
+      }else{
+        // First login — migrate any existing LocalStorage data automatically
+        try{
+          const raw=localStorage.getItem(KEY);
+          if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed.log))S=parsed;}
+        }catch(e){}
+        await db.collection('users').doc(user.uid).set(S);
+      }
+    }catch(e){
+      // Offline fallback — use LocalStorage
+      try{const raw=localStorage.getItem(KEY);if(raw)S=JSON.parse(raw);}catch(e2){}
+    }
+    startSync();
+    $('auth-ov').style.display='none';
+    render();
+  }else{
+    currentUser=null;
+    if(firestoreUnsub){firestoreUnsub();firestoreUnsub=null;}
+    S=defaultState();
+    $('auth-ov').style.display='flex';
+  }
+});
+
+function authSubmit(){
+  const email=($('auth-email').value||'').trim();
+  const pw=$('auth-pw').value||'';
+  const errEl=$('auth-err'),btn=$('auth-btn');
+  if(!email||!pw){
+    errEl.textContent='Enter your email and password.';
+    errEl.className='auth-err show';
+    return;
+  }
+  btn.textContent='Please wait…';
+  btn.disabled=true;
+  errEl.className='auth-err';
+  (authMode==='signin'
+    ?auth.signInWithEmailAndPassword(email,pw)
+    :auth.createUserWithEmailAndPassword(email,pw)
+  ).catch(e=>{
+    btn.disabled=false;
+    btn.textContent=authMode==='signin'?'Sign in':'Create account';
+    const msgs={
+      'auth/user-not-found':'No account with that email. Create one?',
+      'auth/wrong-password':'Incorrect password. Try again.',
+      'auth/invalid-credential':'Incorrect email or password.',
+      'auth/email-already-in-use':'Email already registered — sign in instead.',
+      'auth/weak-password':'Password must be at least 6 characters.',
+      'auth/invalid-email':'Enter a valid email address.',
+      'auth/too-many-requests':'Too many attempts. Try again in a few minutes.',
+      'auth/network-request-failed':'No internet connection. Check your network.',
+    };
+    errEl.textContent=msgs[e.code]||'Something went wrong. Try again.';
+    errEl.className='auth-err show';
+  });
+}
+
+function toggleAuthMode(){
+  authMode=authMode==='signin'?'register':'signin';
+  const s=authMode==='signin';
+  $('auth-title').textContent=s?'Welcome back':'Create account';
+  $('auth-btn').textContent=s?'Sign in':'Create account';
+  $('auth-toggle-txt').textContent=s?"Don't have an account?":'Already have an account?';
+  $('auth-pw').autocomplete=s?'current-password':'new-password';
+  $('auth-err').className='auth-err';
+}
+
+function doSignOut(){
+  if(!confirm('Sign out of Loopli?'))return;
+  auth.signOut();
+}
+
+// ── CUSTOM MATERIALS ──────────────────────────────────────────────────────────
+let editingCMatId=null;
+const CTABS=[{k:'doll',l:'Doll'},{k:'pacifier',l:'Pacifier'},{k:'rattle',l:'Rattle'},{k:'icord',l:'I-cord'},{k:'set',l:'Set'},{k:'blanket',l:'Blanket'}];
+
+function openCMat(id){
+  editingCMatId=(id!=null)?id:null;
+  const m=(id!=null)?(S.customMats||[]).find(x=>x.id===id):null;
+  $('cmat-title').textContent=m?'Edit Material':'Add Material';
+  $('cmat-n').value=m?.n||'';
+  $('cmat-pp').value=m?.pp??'';
+  $('cmat-pq').value=m?.pq??'';
+  $('cmat-u').value=m?.u||'';
+  const active=m?.tabs||[];
+  $('cmat-tabs').innerHTML=CTABS.map(t=>`<button class="tab-toggle${active.includes(t.k)?' active':''}" data-tab="${t.k}" onclick="this.classList.toggle('active')">${t.l}</button>`).join('');
+  $('cmat-del').style.display=m?'':'none';
+  $('cmat-modal').style.display='flex';
+}
+function closeCMat(){$('cmat-modal').style.display='none';editingCMatId=null;}
+function saveCMat(){
+  const n=$('cmat-n').value.trim();
+  const u=$('cmat-u').value.trim();
+  const pp=parseFloat($('cmat-pp').value)||0;
+  const pq=parseFloat($('cmat-pq').value)||1;
+  if(!n){toast('Enter a material name','err');return;}
+  if(!u){toast('Enter a unit (e.g. pcs, gram)','err');return;}
+  const tabs=Array.from($('cmat-tabs').querySelectorAll('.tab-toggle.active')).map(b=>b.dataset.tab);
+  if(!S.customMats)S.customMats=[];
+  if(editingCMatId!=null){
+    const m=S.customMats.find(x=>x.id===editingCMatId);
+    if(m)Object.assign(m,{n,u,pp,pq,c:pp/pq,tabs});
+  }else{
+    const maxId=S.customMats.reduce((mx,m)=>Math.max(mx,m.id),999);
+    S.customMats.push({id:maxId+1,n,u,pp,pq,c:pp/pq,tabs});
+  }
+  save();render();closeCMat();
+  toast((editingCMatId!=null?'"'+n+'" updated':'"'+n+'" added')+' ✓');
+}
+function deleteCMat(){
+  if(editingCMatId==null)return;
+  const m=(S.customMats||[]).find(x=>x.id===editingCMatId);
+  if(!m||!confirm('Delete "'+m.n+'"?'))return;
+  S.customMats=S.customMats.filter(x=>x.id!==editingCMatId);
+  Object.keys(S.c).forEach(t=>{if(S.c[t]?.qty)delete S.c[t].qty[editingCMatId];});
+  save();render();closeCMat();toast('"'+m.n+'" deleted');
+}
+
+// Enter key support on login form
+$('auth-email').addEventListener('keydown',e=>{if(e.key==='Enter')$('auth-pw').focus();});
+$('auth-pw').addEventListener('keydown',e=>{if(e.key==='Enter')authSubmit();});
+
+// Enter key moves focus to next input anywhere in the app
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  const el=document.activeElement;
+  if(!el||el.tagName!=='INPUT'||el.closest('.auth-ov'))return;
+  e.preventDefault();
+  const all=Array.from(document.querySelectorAll('input:not([disabled]):not([type="hidden"])'));
+  const i=all.indexOf(el);
+  if(i>=0&&i<all.length-1)all[i+1].focus();
+  else el.blur();
+});
 </script>
 </body>
 </html>
