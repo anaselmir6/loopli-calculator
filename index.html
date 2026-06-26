@@ -550,6 +550,7 @@ let authMode='signin';
 let pendingAutoFill=null;
 let editingIdx=null;
 let logSearch='';
+let logFilter='';
 
 function defaultState(){
   return{
@@ -768,21 +769,26 @@ function rCalc(type){
 }
 
 // ── LOG ───────────────────────────────────────────────────────────────────────
+const TYPE_LABELS={doll:'Doll',pacifier:'Pacifier',rattle:'Rattle',icord:'I-cord',set:'Set',blanket:'Blanket'};
 function rLog(){
   const log=S.log;
-  const tRev=log.reduce((a,r)=>a+r.sell*r.qty,0);
-  const tCost=log.reduce((a,r)=>a+r.cost*r.qty,0);
+  const filtered=logFilter?log.filter(r=>r.type===logFilter):log;
+  const tRev=filtered.reduce((a,r)=>a+r.sell*r.qty,0);
+  const tCost=filtered.reduce((a,r)=>a+r.cost*r.qty,0);
   const tP=tRev-tCost;
 
   const nameCounts={};
-  log.forEach(r=>{nameCounts[r.name]=(nameCounts[r.name]||0)+1;});
+  filtered.forEach(r=>{nameCounts[r.name]=(nameCounts[r.name]||0)+1;});
+
+  const logTypes=[...new Set(log.map(r=>r.type))];
 
   let cards='';
-  if(!log.length){
-    cards=`<div class="empty"><span class="empty-icon">📋</span><p>No products yet.<br>Confirm an entry from the calculator.</p></div>`;
+  if(!filtered.length){
+    cards=`<div class="empty"><span class="empty-icon">📋</span><p>${log.length?'No entries for this section.':'No products yet.<br>Confirm an entry from the calculator.'}</p></div>`;
   }else{
     [...log].reverse().forEach((r,ri)=>{
       const i=log.length-1-ri;
+      if(logFilter&&r.type!==logFilter)return;
       const rev=r.sell*r.qty,cost=r.cost*r.qty,profit=rev-cost;
       const neg=profit<0;
       const cnt=nameCounts[r.name]||1;
@@ -833,7 +839,13 @@ function rLog(){
 
   return`
     <div class="ptitle">Product Log</div>
-    <div class="psub">${log.length} product${log.length!==1?'s':''}</div>
+    <div class="psub">${logFilter?`${filtered.length} of ${log.length}`:`${log.length}`} product${log.length!==1?'s':''}</div>
+
+    ${log.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      <button onclick="slogFilter('')" class="chip" style="cursor:pointer;padding:5px 14px;font-size:12px;border:2px solid ${logFilter===''?'var(--ink2)':'transparent'};background:var(--gxl);color:var(--ink2)">All</button>
+      ${logTypes.map(t=>`<button onclick="slogFilter('${t}')" class="chip chip-${t}" style="cursor:pointer;padding:5px 14px;font-size:12px;border:2px solid ${logFilter===t?'currentColor':'transparent'}">${TYPE_LABELS[t]||t}</button>`).join('')}
+    </div>`:''}
+
     <div style="margin-bottom:14px">
       <input class="field-input" type="search" placeholder="Search by product name..."
         value="${logSearch.replace(/"/g,'&quot;')}"
@@ -841,7 +853,7 @@ function rLog(){
         style="width:100%;padding:10px 14px;font-size:14px">
     </div>
 
-    ${log.length?`<div class="kpi-grid">
+    ${filtered.length?`<div class="kpi-grid">
       <div class="kpi"><div class="kpi-lbl">Total revenue</div><div class="kpi-val">${usd(tRev)}</div></div>
       <div class="kpi"><div class="kpi-lbl">Total cost</div><div class="kpi-val">${usd(tCost)}</div></div>
       <div class="kpi" style="grid-column:1/-1"><div class="kpi-lbl">Total profit</div><div class="kpi-val g">${usd(tP)}</div></div>
@@ -1024,6 +1036,7 @@ function slogSearch(v){
     el.style.display=(!q||el.dataset.logname.toLowerCase().includes(q))?'':'none';
   });
 }
+function slogFilter(v){logFilter=v;render();}
 function sqty(t,id,v){
   if(!S.c[t].qty)S.c[t].qty={};
   S.c[t].qty[id]=parseFloat(v)||0;
@@ -1169,6 +1182,21 @@ function editLog(i){
       });
     });
   }
+  const customMats=(S.customMats||[]).filter(m=>m.tabs&&m.tabs.includes(r.type));
+  if(customMats.length){
+    mhtml+=`<span class="sec-label" style="background:#f0f4ff;color:#4338ca">Custom</span>`;
+    customMats.forEach(m=>{
+      const q=mq[m.id]||0;
+      mhtml+=`<div class="mat-row">
+        <span class="mat-name">${m.n}</span>
+        <div class="mat-qty-wrap">
+          <input class="mat-qty" type="number" min="0" step="0.1" inputmode="decimal"
+            data-mid="${m.id}" value="${q||''}" placeholder="0">
+          <span class="mat-unit">${m.u}</span>
+        </div>
+      </div>`;
+    });
+  }
   document.getElementById('edit-mats').innerHTML=mhtml;
   document.getElementById('edit-modal').style.display='flex';
 }
@@ -1197,7 +1225,7 @@ function saveLogEdit(){
     const id=parseInt(el.dataset.mid);
     const q=parseFloat(el.value)||0;
     if(q>0){
-      const m=ALL_MATS.find(x=>x.id===id);
+      const m=ALL_MATS.find(x=>x.id===id)||(S.customMats||[]).find(x=>x.id===id);
       if(m){const lc=q*getMC(m);newCost+=lc;newMats.push({id:m.id,n:m.n,u:m.u,q,lc});}
     }
   });
