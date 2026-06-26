@@ -526,13 +526,17 @@ const SECS={
   set:[
     {lbl:"Packaging",bg:"#e0f2fe",fg:"#0369a1",mats:MAT.pkg},
     {lbl:"Doll",bg:"#dbeafe",fg:"#1d4ed8",mats:MAT.doll},
-    {lbl:"Pacifier",bg:"#fce7f3",fg:"#be185d",mats:[...MAT.pac,MAT.doll[1]]},
-    {lbl:"Rattle",bg:"#fef3c7",fg:"#b45309",mats:[MAT.rat[0],MAT.rat[1],MAT.doll[1]]},
-    {lbl:"I-cord",bg:"#f3e8ff",fg:"#7c3aed",mats:[MAT.wire[0],MAT.doll[1]]},
+    {lbl:"Pacifier",bg:"#fce7f3",fg:"#be185d",mats:[...MAT.pac,{id:24,n:"Yarn",u:"gram",pp:4.0,pq:100,c:4.0/100}]},
+    {lbl:"Rattle",bg:"#fef3c7",fg:"#b45309",mats:[MAT.rat[0],MAT.rat[1],{id:25,n:"Yarn",u:"gram",pp:4.0,pq:100,c:4.0/100}]},
+    {lbl:"I-cord",bg:"#f3e8ff",fg:"#7c3aed",mats:[MAT.wire[0],{id:26,n:"Yarn",u:"gram",pp:4.0,pq:100,c:4.0/100}]},
   ]
 };
 
-const ALL_MATS=[...MAT.pkg,...MAT.doll,...MAT.pac,...MAT.rat,...MAT.wire,...MAT.blanket,...MAT.knit];
+const ALL_MATS=[...MAT.pkg,...MAT.doll,...MAT.pac,...MAT.rat,...MAT.wire,...MAT.blanket,...MAT.knit,
+  {id:24,n:"Yarn",u:"gram",pp:4.0,pq:100,c:4.0/100},
+  {id:25,n:"Yarn",u:"gram",pp:4.0,pq:100,c:4.0/100},
+  {id:26,n:"Yarn",u:"gram",pp:4.0,pq:100,c:4.0/100},
+];
 const MAT_BY_NAME={};
 ALL_MATS.forEach(m=>{MAT_BY_NAME[m.n]=m.id;});
 
