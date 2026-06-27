@@ -576,6 +576,8 @@ const $=id=>document.getElementById(id);
 const usd=n=>(isNaN(n)||!isFinite(n))?'$—':'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const pct=n=>(isNaN(n)||!isFinite(n))?'—':(n*100).toFixed(1)+'%';
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+const VALID_TYPES=new Set(['doll','pacifier','rattle','icord','set','blanket']);
 function gq(type,id){return parseFloat(S.c[type]?.qty?.[id])||0}
 function getMC(m){
   const p=S.matPrices?.[m.id];
@@ -659,12 +661,12 @@ function rCalc(type){
       const q=gq(type,m.id);
       const lc=q>0?usd(q*getMC(m)):'';
       shtml+=`<div class="mat-row">
-        <span class="mat-name">${m.n}</span>
+        <span class="mat-name">${esc(m.n)}</span>
         <div class="mat-qty-wrap">
           <input class="mat-qty" type="number" min="0" step="0.1" inputmode="decimal"
             value="${q||''}" placeholder="0"
             oninput="sqty('${type}',${m.id},this.value)">
-          <span class="mat-unit">${m.u}</span>
+          <span class="mat-unit">${esc(m.u)}</span>
           <span class="mat-lc">${lc}</span>
         </div>
       </div>`;
@@ -677,12 +679,12 @@ function rCalc(type){
       const q=gq(type,m.id);
       const lc=q>0?usd(q*getMC(m)):'';
       shtml+=`<div class="mat-row">
-        <span class="mat-name">${m.n}</span>
+        <span class="mat-name">${esc(m.n)}</span>
         <div class="mat-qty-wrap">
           <input class="mat-qty" type="number" min="0" step="0.1" inputmode="decimal"
             value="${q||''}" placeholder="0"
             oninput="sqty('${type}',${m.id},this.value)">
-          <span class="mat-unit">${m.u}</span>
+          <span class="mat-unit">${esc(m.u)}</span>
           <span class="mat-lc">${lc}</span>
         </div>
       </div>`;
@@ -691,7 +693,7 @@ function rCalc(type){
 
   return`
     <div class="profit-hero${isNeg?' neg':''}">
-      <div class="ph-product">${s.name||'New '+cap(type)}</div>
+      <div class="ph-product">${s.name?esc(s.name):'New '+cap(type)}</div>
       <div class="ph-amount${isNeg?' neg':''}">${usd(profit)}</div>
       <div class="ph-row">
         <div class="ph-stat"><div class="ph-stat-val">${pct(margin)}</div><div class="ph-stat-lbl">margin</div></div>
@@ -780,7 +782,7 @@ function rLog(){
   const nameCounts={};
   filtered.forEach(r=>{nameCounts[r.name]=(nameCounts[r.name]||0)+1;});
 
-  const logTypes=[...new Set(log.map(r=>r.type))];
+  const logTypes=[...new Set(log.map(r=>r.type))].filter(t=>VALID_TYPES.has(t));
 
   let cards='';
   if(!filtered.length){
@@ -795,16 +797,16 @@ function rLog(){
       const hasMats=r.mats&&r.mats.length>0;
       const matsHtml=hasMats?r.mats.map(m=>`
         <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span style="color:var(--ink2)">${m.n}</span>
-          <span style="font-family:var(--mono);color:var(--ink3)">${m.q} ${m.u} · <span style="color:var(--g)">${usd(m.lc)}</span></span>
+          <span style="color:var(--ink2)">${esc(m.n)}</span>
+          <span style="font-family:var(--mono);color:var(--ink3)">${m.q} ${esc(m.u)} · <span style="color:var(--g)">${usd(m.lc)}</span></span>
         </div>`).join(''):'';
-      cards+=`<div class="log-card" data-logname="${r.name.replace(/"/g,'&quot;')}">
+      cards+=`<div class="log-card" data-logname="${esc(r.name)}">
         <div class="log-card-top">
           <div>
-            <div class="log-card-name">${r.name}</div>
+            <div class="log-card-name">${esc(r.name)}</div>
             <div class="log-card-meta" style="margin-top:4px">
-              <span class="chip chip-${r.type}">${r.type}</span>
-              <span style="font-size:11px;color:var(--ink3)">${r.date}</span>
+              <span class="chip chip-${esc(r.type)}">${esc(r.type)}</span>
+              <span style="font-size:11px;color:var(--ink3)">${esc(r.date)}</span>
               ${r.time?`<span style="font-size:11px;color:var(--ink3)">⏱ ${r.time} hr</span>`:''}
               ${r.type==='icord'&&(r.sizeL||r.sizeH)?`<span style="font-size:11px;color:var(--ink3)">${r.sizeL||'?'}×${r.sizeH||'?'} cm (L×W)</span>`:r.size?`<span style="font-size:11px;color:var(--ink3)">${r.size} cm</span>`:''}
               ${cnt>1?`<span style="font-size:11px;background:var(--gl);color:var(--g);padding:2px 8px;border-radius:10px;font-weight:600">×${cnt} made</span>`:''}
@@ -843,12 +845,12 @@ function rLog(){
 
     ${log.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
       <button onclick="slogFilter('')" class="chip" style="cursor:pointer;padding:5px 14px;font-size:12px;border:2px solid ${logFilter===''?'var(--ink2)':'transparent'};background:var(--gxl);color:var(--ink2)">All</button>
-      ${logTypes.map(t=>`<button onclick="slogFilter('${t}')" class="chip chip-${t}" style="cursor:pointer;padding:5px 14px;font-size:12px;border:2px solid ${logFilter===t?'currentColor':'transparent'}">${TYPE_LABELS[t]||t}</button>`).join('')}
+      ${logTypes.map(t=>`<button onclick="slogFilter('${esc(t)}')" class="chip chip-${esc(t)}" style="cursor:pointer;padding:5px 14px;font-size:12px;border:2px solid ${logFilter===t?'currentColor':'transparent'}">${esc(TYPE_LABELS[t]||t)}</button>`).join('')}
     </div>`:''}
 
     <div style="margin-bottom:14px">
       <input class="field-input" type="search" placeholder="Search by product name..."
-        value="${logSearch.replace(/"/g,'&quot;')}"
+        value="${esc(logSearch)}"
         oninput="slogSearch(this.value)"
         style="width:100%;padding:10px 14px;font-size:14px">
     </div>
@@ -908,7 +910,7 @@ function rMore(){
       <div class="card-label">Account</div>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;gap:12px">
         <div style="min-width:0">
-          <div style="font-size:15px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${email}</div>
+          <div style="font-size:15px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(email)}</div>
           <div style="font-size:12px;color:var(--g);margin-top:3px;display:flex;align-items:center;gap:5px">
             <span style="width:7px;height:7px;border-radius:50%;background:var(--g);display:inline-block;flex-shrink:0"></span>
             Data syncs automatically
@@ -976,10 +978,10 @@ function rMore(){
         ${(S.customMats||[]).map(m=>`
           <div style="padding:10px 0;border-bottom:1px solid var(--border)">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-              <div style="font-size:13px;font-weight:500;color:var(--ink2)">${m.n}</div>
+              <div style="font-size:13px;font-weight:500;color:var(--ink2)">${esc(m.n)}</div>
               <button onclick="openCMat(${m.id})" style="padding:4px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;font-size:11px;color:var(--ink3);cursor:pointer;font-family:inherit">Edit</button>
             </div>
-            <div style="font-size:12px;color:var(--ink3)">${usd(getMC(m))} per ${m.u} &nbsp;·&nbsp; ${m.tabs.map(t=>cap(t)).join(', ')||'no tab'}</div>
+            <div style="font-size:12px;color:var(--ink3)">${usd(getMC(m))} per ${esc(m.u)} &nbsp;·&nbsp; ${m.tabs.map(t=>cap(t)).join(', ')||'no tab'}</div>
           </div>`).join('')}
       `:''}
       <button onclick="openCMat()" style="width:100%;margin-top:14px;padding:13px;background:var(--gl);border:1.5px dashed var(--border2);border-radius:var(--r);font-size:14px;font-weight:600;color:var(--g);cursor:pointer;font-family:inherit">+ Add custom material</button>
@@ -1172,11 +1174,11 @@ function editLog(i){
       sec.mats.forEach(m=>{
         const q=mq[m.id]||0;
         mhtml+=`<div class="mat-row">
-          <span class="mat-name">${m.n}</span>
+          <span class="mat-name">${esc(m.n)}</span>
           <div class="mat-qty-wrap">
             <input class="mat-qty" type="number" min="0" step="0.1" inputmode="decimal"
               data-mid="${m.id}" value="${q||''}" placeholder="0">
-            <span class="mat-unit">${m.u}</span>
+            <span class="mat-unit">${esc(m.u)}</span>
           </div>
         </div>`;
       });
@@ -1188,11 +1190,11 @@ function editLog(i){
     customMats.forEach(m=>{
       const q=mq[m.id]||0;
       mhtml+=`<div class="mat-row">
-        <span class="mat-name">${m.n}</span>
+        <span class="mat-name">${esc(m.n)}</span>
         <div class="mat-qty-wrap">
           <input class="mat-qty" type="number" min="0" step="0.1" inputmode="decimal"
             data-mid="${m.id}" value="${q||''}" placeholder="0">
-          <span class="mat-unit">${m.u}</span>
+          <span class="mat-unit">${esc(m.u)}</span>
         </div>
       </div>`;
     });
@@ -1255,17 +1257,39 @@ function expJSON(){
   a.download='loopli_backup_'+new Date().toISOString().slice(0,10)+'.json';
   a.click();toast('Backup downloaded');
 }
+function csvField(s){s=String(s??'');if(/^[=+\-@\t\r]/.test(s))s="'"+s;return'"'+s.replace(/"/g,'""')+'"';}
 function expCSV(){
   if(!S.log.length){toast('Nothing to export','err');return}
   const h='Name,Type,Qty,Unit Cost,Sell Price,Revenue,Cost,Profit,Date\n';
   const rows=S.log.map(r=>{
     const rev=r.sell*r.qty,cost=r.cost*r.qty;
-    return`"${r.name}","${r.type}",${r.qty},${r.cost.toFixed(4)},${r.sell.toFixed(2)},${rev.toFixed(2)},${cost.toFixed(2)},${(rev-cost).toFixed(2)},"${r.date}"`;
+    return`${csvField(r.name)},${csvField(r.type)},${r.qty},${r.cost.toFixed(4)},${r.sell.toFixed(2)},${rev.toFixed(2)},${cost.toFixed(2)},${(rev-cost).toFixed(2)},${csvField(r.date)}`;
   }).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([h+rows],{type:'text/csv'}));
   a.download='loopli_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();toast('CSV exported');
+}
+function sanitizeLogEntry(r){
+  return{
+    name:String(r.name||'').slice(0,300),
+    type:VALID_TYPES.has(r.type)?r.type:'doll',
+    qty:Math.max(1,parseInt(r.qty)||1),
+    cost:Math.max(0,parseFloat(r.cost)||0),
+    sell:Math.max(0,parseFloat(r.sell)||0),
+    date:String(r.date||'').replace(/[<>"'&]/g,'').slice(0,20),
+    time:parseFloat(r.time)||0,
+    size:parseFloat(r.size)||0,
+    sizeL:parseFloat(r.sizeL)||0,
+    sizeH:parseFloat(r.sizeH)||0,
+    mats:Array.isArray(r.mats)?r.mats.filter(m=>m&&typeof m==='object').map(m=>({
+      id:parseInt(m.id)||0,
+      n:String(m.n||'').slice(0,200),
+      u:String(m.u||'').slice(0,30),
+      q:Math.max(0,parseFloat(m.q)||0),
+      lc:Math.max(0,parseFloat(m.lc)||0),
+    })):[],
+  };
 }
 function impJSON(text){
   try{
@@ -1273,8 +1297,8 @@ function impJSON(text){
     const logData=p.log||p.data?.log;
     if(!Array.isArray(logData))throw 0;
     if(!confirm('Import '+logData.length+' products? This replaces your current '+S.log.length+' entries.'))return;
-    S.log=logData;save();go('log');
-    toast('Imported '+logData.length+' products ✓');
+    S.log=logData.map(sanitizeLogEntry);save();go('log');
+    toast('Imported '+S.log.length+' products ✓');
   }catch(e){toast('Invalid backup file','err')}
 }
 $('file-inp').addEventListener('change',e=>{
